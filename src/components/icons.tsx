@@ -1,5 +1,6 @@
 import NextImage, { type ImageProps as NextImageProps } from 'next/image';
 import type { SVGProps } from "react";
+import { cn } from "@/lib/utils";
 
 // IMPORTANT: Please place your logo image in the `public` folder
 // and ensure it is named `crs-logo.png` for this component to work.
@@ -12,7 +13,7 @@ interface LogoProps {
 
 export const Logo = ({ className, priority }: LogoProps) => {
   return (
-    <div style={{ position: 'relative' }} className={className}>
+    <div style={{ position: 'relative' }} className={cn("w-full h-full", className)}>
       <NextImage
         src={logoPath}
         alt="Retaliate CRM Logo"
