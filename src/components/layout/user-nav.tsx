@@ -28,7 +28,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10 border-2 border-primary">
-            <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" data-ai-hint="user avatar" />
+            <AvatarImage src="https://i0.wp.com/cyberretaliatorsolutions.com/wp-content/uploads/2023/02/cyber-security-companies-cyber-security-network-security-cybersecurity-for-beginners-near-me-crs-za-2.png?fit=1920%2C1080&ssl=1" alt="User Avatar" data-ai-hint="user avatar" />
             <AvatarFallback>RC</AvatarFallback>
           </Avatar>
         </Button>
