@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react'; // Added useMemo
 import { useRouter } from 'next/navigation';
 // Updated import to directly target the component
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -12,24 +12,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Logo } from "@/components/icons";
 import { Loader2 } from 'lucide-react';
 
-// The line that previously tried to derive StyledFirebaseAuth from FirebaseUIModule is removed
-// as we are now importing StyledFirebaseAuth directly.
-
-const uiConfig = {
-  signInFlow: 'popup',
-  signInOptions: [
-    EmailAuthProvider.PROVIDER_ID,
-    GoogleAuthProvider.PROVIDER_ID,
-  ],
-  callbacks: {
-    signInSuccessWithAuthResult: () => false, // We handle redirect in useEffect
-  },
-};
-
 export default function LoginPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const [renderAuth, setRenderAuth] = useState(false);
+
+  // Memoize uiConfig to prevent it from being a new object on every render.
+  // This is crucial for StyledFirebaseAuth if it uses uiConfig in a useEffect dependency array.
+  const uiConfig = useMemo(() => ({
+    signInFlow: 'popup',
+    signInOptions: [
+      EmailAuthProvider.PROVIDER_ID,
+      GoogleAuthProvider.PROVIDER_ID,
+    ],
+    callbacks: {
+      signInSuccessWithAuthResult: () => false, // We handle redirect in useEffect
+    },
+  }), []); // Empty dependency array means uiConfig is created once and memoized.
 
   useEffect(() => {
     // FirebaseUI only works on the client-side
