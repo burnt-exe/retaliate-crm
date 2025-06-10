@@ -1,11 +1,29 @@
+import NextImage, { type ImageProps as NextImageProps } from 'next/image';
 import type { SVGProps } from "react";
 
-export const Logo = (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 100 100" fill="currentColor" {...props}>
-    <rect width="100" height="100" rx="20" fill="hsl(var(--primary))" />
-    <path d="M30 70 L50 30 L70 70 Z M40 60 L60 60" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" stroke="hsl(var(--primary-foreground))" fill="none" />
-  </svg>
-);
+// IMPORTANT: Please place your logo image in the `public` folder
+// and ensure it is named `crs-logo.png` for this component to work.
+const logoPath = "/crs-logo.png";
+
+interface LogoProps {
+  className?: string;
+  priority?: NextImageProps['priority'];
+}
+
+export const Logo = ({ className, priority }: LogoProps) => {
+  return (
+    <div style={{ position: 'relative' }} className={className}>
+      <NextImage
+        src={logoPath}
+        alt="Retaliate CRM Logo"
+        fill
+        style={{ objectFit: 'contain' }}
+        data-ai-hint="company logo"
+        priority={priority}
+      />
+    </div>
+  );
+};
 
 export const GoogleIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
