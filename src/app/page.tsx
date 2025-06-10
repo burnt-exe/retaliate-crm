@@ -38,17 +38,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Redirect to dashboard if user is logged in and initial auth check is complete.
-    // This hook will trigger after a successful login on this page.
     if (!isLoading && user) {
-      router.push('/dashboard');
+      // Push navigation to the next tick of the event loop
+      // This can help prevent race conditions with FirebaseUI cleanup
+      const timerId = setTimeout(() => {
+        router.push('/dashboard');
+      }, 0);
+      return () => clearTimeout(timerId); // Cleanup timer if component unmounts
     }
   }, [user, isLoading, router]);
 
-  // If AuthProvider is still handling initial load, it shows a global loader.
-  // This page (LoginPage) should only render if AuthProvider.isLoading is false and AuthProvider.user is null.
-  // The useAuth() hook here reflects that state.
-
-  // We only need a loader here if we are waiting for renderAuth (client-side FirebaseUI readiness).
+  // Loader for when FirebaseUI is not yet ready to render (client-side only check).
+  // This is displayed before StyledFirebaseAuth is mounted.
   if (!renderAuth) {
      return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -57,8 +58,9 @@ export default function LoginPage() {
     );
   }
 
-  // If we reach here, AuthProvider determined the user is not logged in,
+  // If we reach here, AuthProvider determined the user is not logged in (isLoading is false and user is null),
   // and renderAuth is true, so we can display the login form.
+  // The AuthProvider handles the global loading screen for initial auth state resolution.
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
@@ -70,7 +72,7 @@ export default function LoginPage() {
           <CardDescription>Sign in or create an account</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* renderAuth is true here */}
+          {/* renderAuth is true here, so StyledFirebaseAuth can be rendered */}
           <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
         </CardContent>
       </Card>
