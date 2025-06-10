@@ -1,23 +1,50 @@
+
 "use client";
 
-import Link from 'next/link';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Github, Facebook, KeyRound } from "lucide-react";
-import { GoogleIcon, MicrosoftIcon, Logo } from "@/components/icons";
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import StyledFirebaseAuth from 'react-firebaseui'; // Use canonical default import
+import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useAuth } from '@/hooks/use-auth';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Logo } from "@/components/icons";
+import { Loader2 } from 'lucide-react';
 
+const uiConfig = {
+  signInFlow: 'popup',
+  signInOptions: [
+    EmailAuthProvider.PROVIDER_ID,
+    GoogleAuthProvider.PROVIDER_ID,
+  ],
+  callbacks: {
+    signInSuccessWithAuthResult: () => false, // We handle redirect in useEffect
+  },
+};
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
+  const [renderAuth, setRenderAuth] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Mock login logic
-    router.push('/dashboard');
-  };
+  useEffect(() => {
+    // FirebaseUI only works on the client-side
+    setRenderAuth(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || (!isLoading && user)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
@@ -27,62 +54,17 @@ export default function LoginPage() {
             <Logo />
           </div>
           <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
-          <CardDescription>Sign in to access your dashboard</CardDescription>
+          <CardDescription>Sign in or create an account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@example.com" required />
+          {renderAuth ? (
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+          ) : (
+            <div className="flex justify-center py-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-sm text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-              <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-              Sign In
-            </Button>
-          </form>
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full">
-                <Github className="mr-2 h-4 w-4" /> GitHub
-              </Button>
-              <Button variant="outline" className="w-full">
-                <GoogleIcon className="mr-2 h-4 w-4" /> Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Facebook className="mr-2 h-4 w-4" /> Facebook
-              </Button>
-              <Button variant="outline" className="w-full">
-                <MicrosoftIcon className="mr-2 h-4 w-4" /> Microsoft
-              </Button>
-            </div>
-          </div>
+          )}
         </CardContent>
-        <CardFooter className="justify-center text-sm">
-          <p className="text-muted-foreground">
-            Don't have an account?{' '}
-            <Link href="#" className="font-medium text-primary hover:underline">
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );
