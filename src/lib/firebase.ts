@@ -2,8 +2,21 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, type Auth } from 'firebase/auth';
 
+const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+// Debugging: Log the API key to the server console
+console.log('Firebase API Key (from .env.local via process.env):', apiKey);
+
+if (!apiKey) {
+  console.warn(
+    'WARNING: Firebase API Key (NEXT_PUBLIC_FIREBASE_API_KEY) is not defined in your environment variables. ' +
+    'Please ensure it is set correctly in your .env.local file and that you have restarted the development server. ' +
+    'Firebase services may not function correctly.'
+  );
+}
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: apiKey,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
