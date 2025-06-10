@@ -26,7 +26,10 @@ export default function LoginPage() {
       GoogleAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
-      signInSuccessWithAuthResult: () => false, // We handle redirect in useEffect
+      signInSuccessWithAuthResult: () => {
+        // We handle redirect in useEffect, so FirebaseUI should not redirect.
+        return false;
+      }
     },
   }), []); // Empty dependency array means uiConfig is created once and memoized.
 
@@ -36,13 +39,26 @@ export default function LoginPage() {
   }, []);
 
   useEffect(() => {
+    // Redirect to dashboard if user is logged in and initial auth check is complete.
     if (!isLoading && user) {
       router.push('/dashboard');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router]); // Reverted to use user, isLoading, router
 
+  // If AuthProvider is still loading its initial state, or if user is already logged in (triggering redirect),
+  // show a loader. This prevents rendering the login form unnecessarily or during transitions.
   if (isLoading || (!isLoading && user)) {
     return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // If we reach here, isLoading is false and user is null.
+  // We still need to wait for renderAuth to be true for client-side FirebaseUI.
+  if (!renderAuth) {
+     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
@@ -60,15 +76,11 @@ export default function LoginPage() {
           <CardDescription>Sign in or create an account</CardDescription>
         </CardHeader>
         <CardContent>
-          {renderAuth ? (
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-          ) : (
-            <div className="flex justify-center py-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          )}
+          {/* renderAuth is true here */}
+          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
         </CardContent>
       </Card>
     </div>
   );
 }
+
