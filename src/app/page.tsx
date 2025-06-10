@@ -37,8 +37,8 @@ export default function LoginPage() {
   }, []);
 
   useEffect(() => {
-    // Redirect to dashboard if user is logged in and initial auth check is complete.
-    if (!isLoading && user) {
+    // Redirect to dashboard if user is logged in, auth check is complete, and FirebaseUI is ready to be rendered.
+    if (!isLoading && user && renderAuth) {
       // Push navigation to the next tick of the event loop
       // This can help prevent race conditions with FirebaseUI cleanup
       const timerId = setTimeout(() => {
@@ -46,7 +46,7 @@ export default function LoginPage() {
       }, 0);
       return () => clearTimeout(timerId); // Cleanup timer if component unmounts
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, renderAuth]); // Added renderAuth to dependency array
 
   // Loader for when FirebaseUI is not yet ready to render (client-side only check).
   // This is displayed before StyledFirebaseAuth is mounted.
@@ -79,3 +79,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
