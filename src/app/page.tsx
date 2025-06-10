@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react'; // Added useMemo
+import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 // Updated import to directly target the component
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -17,8 +17,6 @@ export default function LoginPage() {
   const { user, isLoading } = useAuth();
   const [renderAuth, setRenderAuth] = useState(false);
 
-  // Memoize uiConfig to prevent it from being a new object on every render.
-  // This is crucial for StyledFirebaseAuth if it uses uiConfig in a useEffect dependency array.
   const uiConfig = useMemo(() => ({
     signInFlow: 'popup',
     signInOptions: [
@@ -31,7 +29,7 @@ export default function LoginPage() {
         return false;
       }
     },
-  }), []); // Empty dependency array means uiConfig is created once and memoized.
+  }), []);
 
   useEffect(() => {
     // FirebaseUI only works on the client-side
@@ -40,23 +38,17 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Redirect to dashboard if user is logged in and initial auth check is complete.
+    // This hook will trigger after a successful login on this page.
     if (!isLoading && user) {
       router.push('/dashboard');
     }
-  }, [user, isLoading, router]); // Reverted to use user, isLoading, router
+  }, [user, isLoading, router]);
 
-  // If AuthProvider is still loading its initial state, or if user is already logged in (triggering redirect),
-  // show a loader. This prevents rendering the login form unnecessarily or during transitions.
-  if (isLoading || (!isLoading && user)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // If AuthProvider is still handling initial load, it shows a global loader.
+  // This page (LoginPage) should only render if AuthProvider.isLoading is false and AuthProvider.user is null.
+  // The useAuth() hook here reflects that state.
 
-  // If we reach here, isLoading is false and user is null.
-  // We still need to wait for renderAuth to be true for client-side FirebaseUI.
+  // We only need a loader here if we are waiting for renderAuth (client-side FirebaseUI readiness).
   if (!renderAuth) {
      return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -65,6 +57,8 @@ export default function LoginPage() {
     );
   }
 
+  // If we reach here, AuthProvider determined the user is not logged in,
+  // and renderAuth is true, so we can display the login form.
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
@@ -83,4 +77,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
