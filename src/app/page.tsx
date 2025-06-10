@@ -3,13 +3,16 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import StyledFirebaseAuth from 'react-firebaseui'; // Use canonical default import
+import FirebaseUIModule from 'react-firebaseui'; // Use canonical default import, aliased for clarity
 import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/icons";
 import { Loader2 } from 'lucide-react';
+
+// Attempt to get the actual component, whether it's the direct import or on the .default property
+const StyledFirebaseAuth = FirebaseUIModule.default || FirebaseUIModule;
 
 const uiConfig = {
   signInFlow: 'popup',
