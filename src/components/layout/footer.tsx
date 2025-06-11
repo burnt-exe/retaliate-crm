@@ -16,12 +16,11 @@ export function Footer() {
             <p>Developed by Skunkworks all rights reserved 2025</p>
           </div>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
-            <Link href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
+            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
+            <Link href="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
           </div>
         </div>
       </div>
     </footer>
   );
 }
-
