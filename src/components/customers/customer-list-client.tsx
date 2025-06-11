@@ -3,13 +3,14 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MoreHorizontal, Edit, Trash2, Filter, FileText, Activity, Brain, ExternalLink } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Filter, FileText, Activity, Brain } from "lucide-react";
 import { mockCustomers, Customer, getAllUniqueCustomerTags } from "@/lib/mock-data";
 import { CustomerFormDialog } from "./customer-form-dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -108,7 +109,7 @@ export function CustomerListClient() {
                 <TableCell className="hidden md:table-cell">{customer.email}</TableCell>
                 <TableCell className="hidden lg:table-cell">{customer.phone}</TableCell>
                 <TableCell>{customer.company}</TableCell>
-                <TableCell className="hidden md:table-cell">{new Date(customer.lastContact).toLocaleDateString()}</TableCell>
+                <TableCell className="hidden md:table-cell">{format(new Date(customer.lastContact), 'PPP')}</TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1 max-w-[200px]">
                     {customer.tags.map(tag => (
@@ -169,4 +170,3 @@ export function CustomerListClient() {
     </div>
   );
 }
-
