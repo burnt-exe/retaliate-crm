@@ -41,7 +41,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             {mainNavItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} legacyBehavior passHref>
+                <Link href={item.href}>
                   <SidebarMenuButton
                     isActive={isActive(item)}
                     tooltip={{ children: item.label, className: "bg-popover text-popover-foreground border" }}
@@ -63,7 +63,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
            <SidebarMenu>
             {secondaryNavItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} legacyBehavior passHref>
+                <Link href={item.href}>
                   <SidebarMenuButton
                     isActive={isActive(item)}
                     tooltip={{ children: item.label, className: "bg-popover text-popover-foreground border" }}
