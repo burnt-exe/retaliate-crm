@@ -1,3 +1,5 @@
+"use client";
+
 import { IntegrationCard } from "@/components/integrations/integration-card";
 import { mockIntegrations } from "@/lib/mock-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
