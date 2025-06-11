@@ -20,7 +20,7 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
   };
 
   return (
-    <Card className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:scale-[1.03]">
       <CardHeader className="flex flex-row items-start gap-4 space-y-0 pb-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-primary">
           <integration.icon className="h-6 w-6" />

@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker"; // Assuming this exists or will be created
+// import { DatePicker } from "@/components/ui/date-picker"; // Assuming this exists or will be created
 import { Input } from "@/components/ui/input";
 import { mockTaskGroups, TaskGroup, Task, statuses, priorities, assignees } from "@/lib/mock-data";
 import { PlusCircle, MoreHorizontal, Edit2, Trash2, GripVertical, CalendarIcon } from "lucide-react";
@@ -109,7 +109,7 @@ export function TaskBoardClient() {
   return (
     <div className="space-y-6">
       {taskGroups.map((group) => (
-        <Card key={group.id} className="shadow-lg">
+        <Card key={group.id} className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xl font-semibold font-headline">{group.name}</CardTitle>
             <Button variant="ghost" size="sm" onClick={() => handleAddTask(group.id)}>

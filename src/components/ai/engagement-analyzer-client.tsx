@@ -60,7 +60,7 @@ export function EngagementAnalyzerClient() {
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
-      <Card className="shadow-lg">
+      <Card className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.02]">
         <CardHeader>
           <CardTitle className="font-headline text-xl">Analyze Customer Engagement</CardTitle>
           <CardDescription>
@@ -126,7 +126,7 @@ export function EngagementAnalyzerClient() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.02]">
         <CardHeader>
           <CardTitle className="font-headline text-xl">AI Suggestions</CardTitle>
           <CardDescription>

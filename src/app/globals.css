@@ -12,7 +12,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 40 10% 20%;
     --primary: 45 85% 55%; /* Gold */
-    --primary-foreground: 40 10% 15%; /* Dark text on gold for better contrast */
+    --primary-foreground: 40 10% 10%; /* Dark text on gold for better contrast */
     --secondary: 45 50% 90%; /* Light, muted gold */
     --secondary-foreground: 40 10% 30%; /* Darker text on light gold */
     --muted: 45 40% 95%; /* Very light gold/off-white */
@@ -87,5 +87,19 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes subtleGradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@layer utilities {
+  .animate-subtle-gradient {
+    background: linear-gradient(270deg, hsl(var(--background)), hsl(var(--muted)), hsl(var(--secondary)), hsl(var(--muted)), hsl(var(--background)));
+    background-size: 500% 500%;
+    animation: subtleGradientAnimation 35s ease infinite;
   }
 }
