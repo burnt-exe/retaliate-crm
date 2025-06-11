@@ -18,7 +18,17 @@
   "private": true,
 >>>>>>> 844c260 (var admin = require("firebase-admin");)
   "scripts": {
+<<<<<<< HEAD
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "dev": "next dev --turbopack -p 9003",
+    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
+    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+>>>>>>> 4c08886 (The NextJS app server is having trouble starting. Please identify what c)
   },
   "dependencies": {
 <<<<<<< HEAD
