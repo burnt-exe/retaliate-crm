@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 // Updated import to directly target the component
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { EmailAuthProvider, GoogleAuthProvider, PhoneAuthProvider } from 'firebase/auth'; // Added PhoneAuthProvider
+import { EmailAuthProvider, GoogleAuthProvider, PhoneAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,26 +14,29 @@ import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, isLoading: authContextIsLoading } = useAuth(); // Renamed to avoid confusion
+  const { user, isLoading: authContextIsLoading } = useAuth();
   const [renderAuth, setRenderAuth] = useState(false);
 
   const uiConfig = useMemo(() => ({
     signInFlow: 'popup',
+    signInSuccessUrl: '/dashboard', // FirebaseUI will redirect here
     signInOptions: [
       EmailAuthProvider.PROVIDER_ID,
       GoogleAuthProvider.PROVIDER_ID,
       {
         provider: PhoneAuthProvider.PROVIDER_ID,
         recaptchaParameters: {
-          size: 'invisible', // Use invisible reCAPTCHA
-          badge: 'bottomright' // Or 'bottomleft', 'inline' (inline requires a container)
+          size: 'invisible',
+          badge: 'bottomright'
         },
-        // defaultCountry: 'US', // Optional: Set a default country code
       }
     ],
     callbacks: {
-      signInSuccessWithAuthResult: () => {
-        // We handle redirect in useEffect, so FirebaseUI should not redirect.
+      signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+        // Return false to let FirebaseUI redirect to signInSuccessUrl.
+        // If you need to do something with authResult, do it here.
+        // For example, if you wanted to create a user profile in Firestore:
+        // if (authResult.additionalUserInfo?.isNewUser) { /* create profile */ }
         return false;
       }
     },
@@ -44,58 +47,36 @@ export default function LoginPage() {
     setRenderAuth(true);
   }, []);
 
-  useEffect(() => {
-    // Redirect to dashboard if user is logged in, auth check is complete, and FirebaseUI is ready to be rendered.
-    if (!authContextIsLoading && user && renderAuth) {
-      // Push navigation to the next tick of the event loop
-      // This can help prevent race conditions with FirebaseUI cleanup
-      const timerId = setTimeout(() => {
-        router.push('/dashboard');
-      }, 0);
-      return () => clearTimeout(timerId); // Cleanup timer if component unmounts
-    }
-  }, [user, authContextIsLoading, router, renderAuth]);
-
-  // Case 1: Waiting for FirebaseUI to be ready for client-side rendering.
-  if (!renderAuth) {
-     return (
+  // If auth context is still loading, or if FirebaseUI is not ready to be rendered yet,
+  // or if user is logged in (FirebaseUI should be handling/have handled redirect), show a loader.
+  if (authContextIsLoading || !renderAuth || user) {
+    return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="ml-4 text-muted-foreground">Loading...</p>
       </div>
     );
   }
 
-  // Case 2: Render the login form if client-side is ready, auth state is resolved, and no user is present.
-  // The navigation effect (`useEffect` above) handles the case where a user becomes present.
-  // The AuthProvider higher up handles the initial global loading screen (`authContextIsLoading`).
-  if (renderAuth && !authContextIsLoading && !user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background p-4">
-        <Card className="w-full max-w-md shadow-2xl">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 h-16 w-16">
-              <Logo sizes="64px"/>
-            </div>
-            <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
-            <CardDescription>Sign in or create an account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* renderAuth is guaranteed to be true here, so StyledFirebaseAuth can be rendered */}
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-  
-  // Fallback: If renderAuth is true, but conditions for login form are not met.
-  // This typically means authContextIsLoading is true (covered by AuthProvider's global loader) 
-  // OR user is present (and navigation useEffect is about to redirect).
-  // This loader acts as a placeholder during these brief transient states if not covered by AuthProvider.
+  // At this point:
+  // - authContextIsLoading is false (auth state resolved)
+  // - renderAuth is true (client-side ready for FirebaseUI)
+  // - user is null (not logged in)
+  // So, we should render the login form.
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      <p className="ml-4 text-muted-foreground">Loading...</p>
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="w-full max-w-md shadow-2xl">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 h-16 w-16">
+            <Logo sizes="64px"/>
+          </div>
+          <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
+          <CardDescription>Sign in or create an account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
