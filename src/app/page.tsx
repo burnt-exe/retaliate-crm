@@ -14,7 +14,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authContextIsLoading } = useAuth(); // Renamed to avoid confusion
   const [renderAuth, setRenderAuth] = useState(false);
 
   const uiConfig = useMemo(() => ({
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Redirect to dashboard if user is logged in, auth check is complete, and FirebaseUI is ready to be rendered.
-    if (!isLoading && user && renderAuth) {
+    if (!authContextIsLoading && user && renderAuth) {
       // Push navigation to the next tick of the event loop
       // This can help prevent race conditions with FirebaseUI cleanup
       const timerId = setTimeout(() => {
@@ -46,10 +46,9 @@ export default function LoginPage() {
       }, 0);
       return () => clearTimeout(timerId); // Cleanup timer if component unmounts
     }
-  }, [user, isLoading, router, renderAuth]);
+  }, [user, authContextIsLoading, router, renderAuth]);
 
   // Case 1: Waiting for FirebaseUI to be ready for client-side rendering.
-  // This is displayed before StyledFirebaseAuth is mounted.
   if (!renderAuth) {
      return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -58,37 +57,37 @@ export default function LoginPage() {
     );
   }
 
-  // Case 2: Auth state has resolved, user is now logged in, and FirebaseUI was ready (renderAuth is true).
-  // Navigation is imminent due to the useEffect above.
-  // Render a loader here to ensure StyledFirebaseAuth is unmounted by this component's logic
-  // before the router unmounts the entire page.
-  if (!isLoading && user) { // renderAuth is implicitly true here if we passed Case 1
+  // Case 2: Render the login form if client-side is ready, auth state is resolved, and no user is present.
+  // The navigation effect (`useEffect` above) handles the case where a user becomes present.
+  // The AuthProvider higher up handles the initial global loading screen (`authContextIsLoading`).
+  if (renderAuth && !authContextIsLoading && !user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-        <p className="text-muted-foreground">Signing in, please wait...</p>
+      <div className="flex items-center justify-center min-h-screen bg-background p-4">
+        <Card className="w-full max-w-md shadow-2xl">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 h-16 w-16">
+              <Logo />
+            </div>
+            <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
+            <CardDescription>Sign in or create an account</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* renderAuth is guaranteed to be true here, so StyledFirebaseAuth can be rendered */}
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+          </CardContent>
+        </Card>
       </div>
     );
   }
   
-  // Case 3: FirebaseUI is ready (renderAuth is true), and user is NOT logged in.
-  // (The global AuthProvider handles the initial loading screen if isLoading is true from the start).
-  // This is the state where we should show the login form.
+  // Fallback: If renderAuth is true, but conditions for login form are not met.
+  // This typically means authContextIsLoading is true (covered by AuthProvider's global loader) 
+  // OR user is present (and navigation useEffect is about to redirect).
+  // This loader acts as a placeholder during these brief transient states if not covered by AuthProvider.
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16">
-            <Logo />
-          </div>
-          <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
-          <CardDescription>Sign in or create an account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* renderAuth is guaranteed to be true here, so StyledFirebaseAuth can be rendered */}
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-        </CardContent>
-      </Card>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <p className="ml-4 text-muted-foreground">Loading...</p>
     </div>
   );
 }
