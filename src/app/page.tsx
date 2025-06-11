@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 // Updated import to directly target the component
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import { EmailAuthProvider, GoogleAuthProvider, PhoneAuthProvider } from 'firebase/auth'; // Added PhoneAuthProvider
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +22,14 @@ export default function LoginPage() {
     signInOptions: [
       EmailAuthProvider.PROVIDER_ID,
       GoogleAuthProvider.PROVIDER_ID,
+      {
+        provider: PhoneAuthProvider.PROVIDER_ID,
+        recaptchaParameters: {
+          size: 'invisible', // Use invisible reCAPTCHA
+          badge: 'bottomright' // Or 'bottomleft', 'inline' (inline requires a container)
+        },
+        // defaultCountry: 'US', // Optional: Set a default country code
+      }
     ],
     callbacks: {
       signInSuccessWithAuthResult: () => {
