@@ -46,9 +46,9 @@ export default function LoginPage() {
       }, 0);
       return () => clearTimeout(timerId); // Cleanup timer if component unmounts
     }
-  }, [user, isLoading, router, renderAuth]); // Added renderAuth to dependency array
+  }, [user, isLoading, router, renderAuth]);
 
-  // Loader for when FirebaseUI is not yet ready to render (client-side only check).
+  // Case 1: Waiting for FirebaseUI to be ready for client-side rendering.
   // This is displayed before StyledFirebaseAuth is mounted.
   if (!renderAuth) {
      return (
@@ -58,9 +58,22 @@ export default function LoginPage() {
     );
   }
 
-  // If we reach here, AuthProvider determined the user is not logged in (isLoading is false and user is null),
-  // and renderAuth is true, so we can display the login form.
-  // The AuthProvider handles the global loading screen for initial auth state resolution.
+  // Case 2: Auth state has resolved, user is now logged in, and FirebaseUI was ready (renderAuth is true).
+  // Navigation is imminent due to the useEffect above.
+  // Render a loader here to ensure StyledFirebaseAuth is unmounted by this component's logic
+  // before the router unmounts the entire page.
+  if (!isLoading && user) { // renderAuth is implicitly true here if we passed Case 1
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+        <p className="text-muted-foreground">Signing in, please wait...</p>
+      </div>
+    );
+  }
+  
+  // Case 3: FirebaseUI is ready (renderAuth is true), and user is NOT logged in.
+  // (The global AuthProvider handles the initial loading screen if isLoading is true from the start).
+  // This is the state where we should show the login form.
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
@@ -72,11 +85,10 @@ export default function LoginPage() {
           <CardDescription>Sign in or create an account</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* renderAuth is true here, so StyledFirebaseAuth can be rendered */}
+          {/* renderAuth is guaranteed to be true here, so StyledFirebaseAuth can be rendered */}
           <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
         </CardContent>
       </Card>
     </div>
   );
 }
-
