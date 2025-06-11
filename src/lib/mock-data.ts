@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon } from 'lucide-react';
+import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon, Files, Cloud, Package, Archive, Github, FolderKanban, Server } from 'lucide-react';
 
 export interface Task {
   id: string;
@@ -96,6 +96,26 @@ export const mockIntegrations: Integration[] = [
     connected: false,
   },
 ];
+
+export interface StorageService {
+  id: string;
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  category: "Cloud Storage" | "Code Repositories" | "Network & Local";
+  connected: boolean;
+}
+
+export const mockStorageServices: StorageService[] = [
+  { id: 'storage-gdrive', name: 'Google Drive', description: 'Sync files and documents from your Google Drive.', icon: Files, category: 'Cloud Storage', connected: true },
+  { id: 'storage-onedrive', name: 'Microsoft OneDrive', description: 'Access your OneDrive files directly within the CRM.', icon: Cloud, category: 'Cloud Storage', connected: false },
+  { id: 'storage-dropbox', name: 'Dropbox', description: 'Connect your Dropbox account to manage shared files.', icon: Package, category: 'Cloud Storage', connected: false },
+  { id: 'storage-box', name: 'Box', description: 'Integrate with Box for secure enterprise file sharing.', icon: Archive, category: 'Cloud Storage', connected: true },
+  { id: 'storage-github', name: 'GitHub', description: 'Link GitHub repositories for project-related files.', icon: Github, category: 'Code Repositories', connected: false },
+  { id: 'storage-workfolders', name: 'Work Folders / Network Share', description: 'Access shared folders from your local network.', icon: FolderKanban, category: 'Network & Local', connected: true },
+  { id: 'storage-ftp', name: 'FTP Server', description: 'Connect to an FTP server for file transfers.', icon: Server, category: 'Network & Local', connected: false },
+];
+
 
 export const statuses: Task['status'][] = ['To Do', 'In Progress', 'Review', 'Done'];
 export const priorities: Task['priority'][] = ['Low', 'Medium', 'High'];
