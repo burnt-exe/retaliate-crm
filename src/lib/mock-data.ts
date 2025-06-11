@@ -46,15 +46,17 @@ export interface Customer {
   email: string;
   phone: string;
   company: string;
-  lastContact: string;
+  lastContact: string; // YYYY-MM-DD
   tags: string[];
+  notes?: string;
 }
 
 export const mockCustomers: Customer[] = [
-  { id: 'cust-1', name: 'Acme Corp', email: 'contact@acme.com', phone: '555-0101', company: 'Acme Corporation', lastContact: '2024-07-15', tags: ['Enterprise', 'Lead'] },
-  { id: 'cust-2', name: 'Beta Solutions', email: 'info@betasolutions.com', phone: '555-0102', company: 'Beta Solutions Ltd.', lastContact: '2024-07-20', tags: ['SMB', 'Active'] },
-  { id: 'cust-3', name: 'Gamma Innovations', email: 'support@gammainnov.com', phone: '555-0103', company: 'Gamma Innovations Inc.', lastContact: '2024-06-30', tags: ['Startup', 'Trial'] },
-  { id: 'cust-4', name: 'Delta Services', email: 'sales@deltaserv.com', phone: '555-0104', company: 'Delta Services LLC', lastContact: '2024-07-22', tags: ['Enterprise', 'Prospect'] },
+  { id: 'cust-1', name: 'Acme Corp', email: 'contact@acme.com', phone: '555-0101', company: 'Acme Corporation', lastContact: '2024-07-15', tags: ['Enterprise', 'Lead'], notes: 'Initial contact made. Interested in Q4 product line. Follow up regarding new AI features.' },
+  { id: 'cust-2', name: 'Beta Solutions', email: 'info@betasolutions.com', phone: '555-0102', company: 'Beta Solutions Ltd.', lastContact: '2024-07-20', tags: ['SMB', 'Active'], notes: 'Long-term client. Prefers email communication. Discussed upcoming renewal.' },
+  { id: 'cust-3', name: 'Gamma Innovations', email: 'support@gammainnov.com', phone: '555-0103', company: 'Gamma Innovations Inc.', lastContact: '2024-06-30', tags: ['Startup', 'Trial'], notes: 'Trial period ending soon. Monitor usage and offer discount for conversion.' },
+  { id: 'cust-4', name: 'Delta Services', email: 'sales@deltaserv.com', phone: '555-0104', company: 'Delta Services LLC', lastContact: '2024-07-22', tags: ['Enterprise', 'Prospect'], notes: 'Sent proposal. Awaiting feedback. Key contact: Sarah Miller.' },
+  { id: 'cust-5', name: 'Epsilon Exports', email: 'exports@epsilon.com', phone: '555-0105', company: 'Epsilon Exports Co.', lastContact: '2024-05-10', tags: ['SMB', 'Churn Risk'], notes: 'Low activity recently. Needs outreach.' },
 ];
 
 export interface Integration {
@@ -126,3 +128,11 @@ export const assignees = [
   { name: 'David Copperfield', avatarUrl: 'https://placehold.co/40x40.png?text=DC', fallback: 'DC' },
   { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' },
 ];
+
+export const getAllUniqueCustomerTags = (customers: Customer[]): string[] => {
+  const allTags = customers.reduce((acc, customer) => {
+    customer.tags.forEach(tag => acc.add(tag));
+    return acc;
+  }, new Set<string>());
+  return Array.from(allTags);
+};
