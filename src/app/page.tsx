@@ -66,7 +66,7 @@ export default function LoginPage() {
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 h-16 w-16">
-              <Logo />
+              <Logo sizes="64px"/>
             </div>
             <CardTitle className="text-3xl font-headline">Welcome to Retaliate CRM</CardTitle>
             <CardDescription>Sign in or create an account</CardDescription>

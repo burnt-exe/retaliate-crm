@@ -52,7 +52,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar variant="sidebar" collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader className="p-4">
           <Link href="/dashboard" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-            <Logo className="h-8 w-8 text-sidebar-primary-foreground" />
+            <Logo className="h-8 w-8 text-sidebar-primary-foreground" sizes="32px" />
             <span className="font-semibold text-lg text-sidebar-foreground group-data-[collapsible=icon]:hidden font-headline">Retaliate CRM</span>
           </Link>
         </SidebarHeader>

@@ -9,9 +9,10 @@ const logoPath = "/crs-logo.png";
 interface LogoProps {
   className?: string;
   priority?: NextImageProps['priority'];
+  sizes?: string;
 }
 
-export const Logo = ({ className, priority }: LogoProps) => {
+export const Logo = ({ className, priority, sizes }: LogoProps) => {
   return (
     <div style={{ position: 'relative' }} className={cn("w-full h-full", className)}>
       <NextImage
@@ -21,6 +22,7 @@ export const Logo = ({ className, priority }: LogoProps) => {
         style={{ objectFit: 'contain' }}
         data-ai-hint="company logo"
         priority={priority}
+        sizes={sizes || "100vw"} // Default to 100vw if no specific sizes prop is passed
       />
     </div>
   );
