@@ -5,12 +5,13 @@ import Link from "next/link";
 import { Logo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Rocket, Info, ShieldCheck } from "lucide-react";
+import { Menu } from "lucide-react";
 
+// Simplified nav links for a cleaner look
 const navLinks = [
-  { href: "#features", label: "Features", icon: Rocket },
-  { href: "/dashboard", label: "App Demo", icon: ShieldCheck }, // Updated from #solutions
-  { href: "#about", label: "About", icon: Info }, // Simplified label
+  { href: "/dashboard", label: "App Demo" },
+  { href: "#about", label: "About" }, // Assuming you might add an 'about' section or link out
+  { href: "#features", label: "Features" }, // Assuming you might add a 'features' section or link out
 ];
 
 export function PublicNavbar() {
@@ -18,8 +19,8 @@ export function PublicNavbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Logo className="h-8 w-8" sizes="32px"/>
-          <span className="font-bold sm:inline-block font-headline text-lg">
+          <Logo className="h-8 w-8 text-primary" sizes="32px"/>
+          <span className="font-bold sm:inline-block font-headline text-lg text-primary">
             Retaliate CRM
           </span>
         </Link>
@@ -28,29 +29,29 @@ export function PublicNavbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="font-medium text-foreground/60 transition-colors hover:text-foreground/80"
+              className="font-medium text-foreground/70 transition-colors hover:text-primary"
             >
               {link.label}
             </Link>
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <Button asChild>
+          <Button asChild variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
             <Link href="/dashboard">Access The App</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
+              <Button variant="outline" size="icon" className="md:hidden border-primary text-primary hover:bg-primary/10">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
               <div className="flex flex-col h-full">
-                <div className="p-6 border-b">
+                <div className="p-6 border-b border-border">
                    <Link href="/" className="flex items-center space-x-2">
-                      <Logo className="h-8 w-8" sizes="32px"/>
-                      <span className="font-bold font-headline text-lg">Retaliate CRM</span>
+                      <Logo className="h-8 w-8 text-primary" sizes="32px"/>
+                      <span className="font-bold font-headline text-lg text-primary">Retaliate CRM</span>
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-4 p-6 flex-grow">
@@ -60,13 +61,13 @@ export function PublicNavbar() {
                       href={link.href}
                       className="flex items-center gap-3 rounded-lg p-3 text-lg font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
-                      <link.icon className="h-5 w-5" />
+                      {/* Icons removed for a cleaner look */}
                       {link.label}
                     </Link>
                   ))}
                 </nav>
-                <div className="p-6 border-t">
-                    <Button asChild className="w-full">
+                <div className="p-6 border-t border-border">
+                    <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href="/dashboard">Access The App</Link>
                     </Button>
                 </div>
