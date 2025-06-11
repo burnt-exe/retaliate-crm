@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -33,7 +34,7 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
       <CardContent className="flex-grow">
         <CardDescription>{integration.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex items-center justify-between border-t pt-4">
+      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 sm:flex-row sm:justify-between sm:gap-2">
         <div className="flex items-center space-x-2">
           <Switch
             id={`connect-${integration.id}`}
@@ -45,7 +46,12 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
             {isConnected ? "Connected" : "Disconnected"}
           </label>
         </div>
-        <Button variant={isConnected ? "outline" : "default"} size="sm" onClick={handleToggleConnection}>
+        <Button 
+          variant={isConnected ? "outline" : "default"} 
+          size="sm" 
+          onClick={handleToggleConnection}
+          className="w-full sm:w-auto"
+        >
           {isConnected ? "Manage" : "Connect"}
         </Button>
       </CardFooter>
