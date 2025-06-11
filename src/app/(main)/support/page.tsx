@@ -81,10 +81,11 @@ export default function SupportPage() {
               <ul className="space-y-2">
                 {howToGuides.map(guide => (
                     <li key={guide.title}>
-                        <Link href={guide.href} passHref legacyBehavior>
-                           <a className="text-sm text-primary hover:underline hover:text-primary/80 transition-colors">
-                             {guide.title}
-                           </a>
+                        <Link
+                          href={guide.href}
+                          className="text-sm text-primary hover:underline hover:text-primary/80 transition-colors"
+                        >
+                           {guide.title}
                         </Link>
                     </li>
                 ))}
