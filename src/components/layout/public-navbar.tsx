@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,13 +9,13 @@ import { Menu, Rocket, Info, ShieldCheck } from "lucide-react";
 
 const navLinks = [
   { href: "#features", label: "Features", icon: Rocket },
-  { href: "#solutions", label: "Solutions", icon: ShieldCheck },
-  { href: "#about", label: "About Us", icon: Info },
+  { href: "/dashboard", label: "App Demo", icon: ShieldCheck }, // Updated from #solutions
+  { href: "#about", label: "About", icon: Info }, // Simplified label
 ];
 
 export function PublicNavbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Logo className="h-8 w-8" sizes="32px"/>
@@ -35,7 +36,7 @@ export function PublicNavbar() {
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2">
           <Button asChild>
-            <Link href="/dashboard">Go to App</Link>
+            <Link href="/dashboard">Access The App</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -66,7 +67,7 @@ export function PublicNavbar() {
                 </nav>
                 <div className="p-6 border-t">
                     <Button asChild className="w-full">
-                        <Link href="/dashboard">Go to App</Link>
+                        <Link href="/dashboard">Access The App</Link>
                     </Button>
                 </div>
               </div>
