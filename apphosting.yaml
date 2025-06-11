@@ -24,10 +24,71 @@ runConfig:
   #   secret: mySecretRef
 =======
 # Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
+# For more details, see: https://firebase.google.com/docs/app-hosting/configure
 
+# Specifies the Node.js runtime environment.
+# Supported runtimes: https://firebase.google.com/docs/app-hosting/reference/yaml-config-reference#runtime
+runtime: nodejs20
+
+# The command to build your Next.js application.
+# This should correspond to a script in your package.json (e.g., "build": "next build").
+build: npm run build
+
+# The command to start your Next.js application in production.
+# This should correspond to a script in your package.json (e.g., "start": "next start").
+entryPoint: npm run start
+
+# Environment variables for your application.
+# For sensitive data, prefer using Firebase's secret management:
+# https://firebase.google.com/docs/app-hosting/configure-backend#manage-secrets
+env:
+  - variable: NODE_ENV
+    value: production
+  # Example of another environment variable:
+  # - variable: API_BASE_URL
+  #   value: https://api.example.com
+
+# Run configuration settings for your backend instances.
 runConfig:
+<<<<<<< HEAD
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
 >>>>>>> 7d3cda9 (initial scaffold)
+=======
+  # Minimum number of instances to keep warm. Default is 0.
+  minInstances: 0
+  # Maximum number of instances to scale up to in response to traffic.
+  # Default is 100 if not specified.
+  maxInstances: 2
+  # Number of concurrent requests an instance can handle before scaling up.
+  # Default is 80.
+  concurrency: 80
+  # CPU allocation per instance (in CPU units). 1 CPU = 1 vCPU.
+  # Default is 1.
+  cpu: 1
+  # Memory allocation per instance (in MiB).
+  # Default is 512.
+  memoryMiB: 512
+
+# Optional: Settings for automatic deployments from a Git repository.
+# Uncomment and configure if you want to set up CI/CD.
+# automaticReleases:
+#   repository: projects/<YOUR_PROJECT_ID>/locations/us-central1/connections/<YOUR_CONNECTION_ID>/repositories/<YOUR_REPO_ID>
+#   branch: main # Or your production branch (e.g., master, prod)
+#   # Optional: If your app is not in the root of the repository.
+#   # appDirectory: /path/to/your/app
+#   # Optional: A command to run before the 'build' command (e.g., npm ci, yarn install).
+#   # prebuild: npm ci
+
+# Optional: Custom headers for responses from your backend.
+# headers:
+#   - path: /_next/static/* # Example: Cache static assets for a long time
+#     headers:
+#       - header: Cache-Control
+#         value: public, max-age=31536000, immutable
+#   - path: /images/*
+#     headers:
+#       - header: Cache-Control
+#         value: public, max-age=3600
+>>>>>>> e7e4dcf (create apphosting.yaml)
