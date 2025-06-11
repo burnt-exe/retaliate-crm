@@ -18,7 +18,11 @@ export default function LandingPage() {
             sizes="(max-width: 767px) 64px, 80px" 
           />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-headline mb-6 leading-tight animate-in fade-in-0 slide-in-from-top-10 delay-200 duration-700">
-            Welcome to <span className="text-primary">Retaliate CRM</span>
+            Welcome
+            <br />
+            to
+            <br />
+            <span className="text-primary">Retaliate CRM</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-10 animate-in fade-in-0 slide-in-from-top-8 delay-400 duration-700">
             Streamline your customer relationships with an elegant and powerful platform.
