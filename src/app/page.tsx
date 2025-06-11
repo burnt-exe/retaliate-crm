@@ -25,8 +25,7 @@ export default function LandingPage() {
             <span className="text-primary">Retaliate CRM</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-10 animate-in fade-in-0 slide-in-from-top-8 delay-400 duration-700">
-            Streamline your customer relationships with an elegant and powerful platform.
-            Access all features instantly, completely free.
+            Streamline your customer relationships with an elegant and powerful platform.<br />Access all features instantly, completely free.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in-0 slide-in-from-bottom-10 delay-500 duration-700">
             <Button size="lg" asChild className="shadow-lg hover:shadow-primary/30 transition-shadow text-lg">
