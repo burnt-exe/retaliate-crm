@@ -14,8 +14,8 @@ export default function LandingPage() {
       <main className="flex-grow flex items-center justify-center text-center px-4 py-16 md:py-24 animate-in fade-in-0 slide-in-from-top-12 duration-1000">
         <div className="max-w-3xl">
           <Logo 
-            className="h-16 w-16 md:h-20 md:w-20 mx-auto mb-8 text-primary animate-in fade-in-0 zoom-in-50 delay-300 duration-700" 
-            sizes="(max-width: 767px) 64px, 80px" 
+            className="h-20 w-20 md:h-24 md:w-24 mx-auto mb-8 text-primary animate-in fade-in-0 zoom-in-50 delay-300 duration-700" 
+            sizes="(max-width: 767px) 80px, 96px" 
           />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-headline mb-6 leading-tight animate-in fade-in-0 slide-in-from-top-10 delay-200 duration-700">
             Welcome
