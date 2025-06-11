@@ -1,5 +1,6 @@
+
 import type { LucideIcon } from 'lucide-react';
-import { Facebook, Linkedin, Users as UsersIcon, Briefcase } from 'lucide-react'; // Users aliased to avoid conflict
+import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon } from 'lucide-react';
 
 export interface Task {
   id: string;
@@ -69,7 +70,31 @@ export const mockIntegrations: Integration[] = [
   { id: 'integ-fb', name: 'Facebook', description: 'Connect your Facebook Pages for ads and insights.', icon: Facebook, category: 'Social Media', connected: true },
   { id: 'integ-li', name: 'LinkedIn', description: 'Sync LinkedIn contacts and company data.', icon: Linkedin, category: 'Social Media', connected: false },
   { id: 'integ-sage', name: 'Sage Accounting', description: 'Integrate customer data with Sage for billing.', icon: Briefcase, category: 'Accounting', connected: false },
-  { id: 'integ-teams', name: 'Microsoft Teams', description: 'Get notifications and collaborate in Teams.', icon: UsersIcon, category: 'Collaboration', connected: true },
+  { id: 'integ-teams', name: 'Microsoft Teams', description: 'Get notifications and collaborate in Teams.', icon: MessageSquare, category: 'Collaboration', connected: true },
+  {
+    id: 'integ-m365',
+    name: 'Microsoft 365 Suite',
+    description: 'Connect with Word, Excel, PowerPoint, Outlook and more for seamless productivity.',
+    icon: AppWindow,
+    category: 'Productivity',
+    connected: false,
+  },
+  {
+    id: 'integ-softphone',
+    name: 'Softphone (VoIP/SIP)',
+    description: 'Integrate your VoIP/SIP softphone for direct client calls and internal team communication.',
+    icon: Phone,
+    category: 'Communication',
+    connected: false,
+  },
+  {
+    id: 'integ-bulkmail',
+    name: 'Bulk Email (Microsoft 365)',
+    description: 'Send bulk emails using your Microsoft 365 tenant for marketing campaigns.',
+    icon: Mail,
+    category: 'Marketing',
+    connected: false,
+  },
 ];
 
 export const statuses: Task['status'][] = ['To Do', 'In Progress', 'Review', 'Done'];
