@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Users, Plug, Brain, Settings, LifeBuoy, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Users, Plug, Brain, Settings, LifeBuoy, MessageSquare, UserCircle } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export type NavItem = {
@@ -18,6 +18,8 @@ export const mainNavItems: NavItem[] = [
 ];
 
 export const secondaryNavItems: NavItem[] = [
+  { href: "/account", label: "Account", icon: UserCircle, segment: "account" },
   { href: "/settings", label: "Settings", icon: Settings, segment: "settings" },
   { href: "/support", label: "Support", icon: LifeBuoy, segment: "support" },
 ];
+
