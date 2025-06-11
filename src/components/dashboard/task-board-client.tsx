@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -9,52 +10,38 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import { DatePicker } from "@/components/ui/date-picker"; // Assuming this exists or will be created
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { mockTaskGroups, TaskGroup, Task, statuses, priorities, assignees } from "@/lib/mock-data";
-import { PlusCircle, MoreHorizontal, Edit2, Trash2, GripVertical, CalendarIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { PlusCircle, MoreHorizontal, Edit2, Trash2, GripVertical, Check } from "lucide-react";
 
-const statusColors: Record<Task['status'], string> = {
-  'To Do': 'bg-gray-500',
-  'In Progress': 'bg-blue-500',
-  'Review': 'bg-yellow-500',
-  'Done': 'bg-green-500',
+const getStatusBadgeVariant = (status: Task['status']): React.ComponentProps<typeof Badge>['variant'] => {
+  switch (status) {
+    case 'To Do':
+      return 'outline';
+    case 'In Progress':
+      return 'secondary';
+    case 'Review':
+      return 'default';
+    case 'Done':
+      return 'outline'; // Will add a check icon
+    default:
+      return 'default';
+  }
 };
 
-const priorityColors: Record<Task['priority'], string> = {
-  'Low': 'bg-green-200 text-green-800',
-  'Medium': 'bg-yellow-200 text-yellow-800',
-  'High': 'bg-red-200 text-red-800',
+const getPriorityBadgeVariant = (priority: Task['priority']): React.ComponentProps<typeof Badge>['variant'] => {
+  switch (priority) {
+    case 'Low':
+      return 'outline';
+    case 'Medium':
+      return 'secondary';
+    case 'High':
+      return 'destructive';
+    default:
+      return 'default';
+  }
 };
-
-// Simple DatePicker component if not already available in ui
-const DatePickerComponent = ({ date, onDateChange }: { date?: Date, onDateChange: (date?: Date) => void }) => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className="w-full justify-start text-left font-normal"
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={onDateChange}
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
-  );
-};
-
 
 export function TaskBoardClient() {
   const [taskGroups, setTaskGroups] = useState<TaskGroup[]>(mockTaskGroups);
@@ -180,15 +167,19 @@ export function TaskBoardClient() {
                         value={task.status}
                         onValueChange={(value: Task['status']) => handleUpdateTask(group.id, task.id, 'status', value)}
                       >
-                        <SelectTrigger className="w-[120px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_svg]:ml-auto">
-                            <Badge className={`${statusColors[task.status]} text-white rounded-full px-2 py-0.5 text-xs`}>
+                        <SelectTrigger className="w-auto min-w-[100px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_svg]:ml-auto">
+                            <Badge variant={getStatusBadgeVariant(task.status)} className="rounded-full px-2 py-0.5 text-xs">
+                                {task.status === 'Done' && <Check className="mr-1 h-3 w-3" />}
                                 <SelectValue placeholder="Status" />
                             </Badge>
                         </SelectTrigger>
                         <SelectContent>
                           {statuses.map(s => (
                             <SelectItem key={s} value={s}>
-                              <Badge className={`${statusColors[s]} text-white rounded-full px-2 py-0.5 text-xs`}>{s}</Badge>
+                              <Badge variant={getStatusBadgeVariant(s)} className="rounded-full px-2 py-0.5 text-xs">
+                                {s === 'Done' && <Check className="mr-1 h-3 w-3" />}
+                                {s}
+                              </Badge>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -200,23 +191,24 @@ export function TaskBoardClient() {
                             onValueChange={(value: Task['priority']) => handleUpdateTask(group.id, task.id, 'priority', value)}
                         >
                             <SelectTrigger className="w-[100px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_svg]:ml-auto">
-                                <Badge className={`${priorityColors[task.priority]} rounded-full px-2 py-0.5 text-xs`}>
+                                <Badge variant={getPriorityBadgeVariant(task.priority)} className="rounded-full px-2 py-0.5 text-xs">
                                     <SelectValue placeholder="Priority" />
                                 </Badge>
                             </SelectTrigger>
                             <SelectContent>
                             {priorities.map(p => (
                                 <SelectItem key={p} value={p}>
-                                <Badge className={`${priorityColors[p]} rounded-full px-2 py-0.5 text-xs`}>{p}</Badge>
+                                <Badge variant={getPriorityBadgeVariant(p)} className="rounded-full px-2 py-0.5 text-xs">{p}</Badge>
                                 </SelectItem>
                             ))}
                             </SelectContent>
                         </Select>
                     </TableCell>
                     <TableCell>
-                       <DatePickerComponent 
+                       <DatePicker 
                           date={new Date(task.dueDate)}
                           onDateChange={(date) => handleUpdateTask(group.id, task.id, 'dueDate', date?.toISOString().split('T')[0] || '')}
+                          className="w-full border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_button]:p-0 [&_button]:h-auto [&_button]:justify-start [&_button]:font-normal"
                         />
                     </TableCell>
                     <TableCell>
@@ -265,3 +257,4 @@ export function TaskBoardClient() {
     </div>
   );
 }
+
