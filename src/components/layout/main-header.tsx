@@ -1,7 +1,6 @@
 "use client";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { UserNav } from "@/components/layout/user-nav";
 import { usePathname } from 'next/navigation';
 import { mainNavItems, secondaryNavItems } from "./sidebar-nav-items";
 
@@ -14,8 +13,7 @@ export function MainHeader() {
     if (currentNavItem) {
       return currentNavItem.label;
     }
-    // Fallback for dynamic routes or routes not in nav
-    if (pathname === "/") return "Overview"; // Or some default for the root of (main)
+    if (pathname === "/") return "Overview"; 
     const segments = pathname.split('/').filter(Boolean);
     if (segments.length > 0) {
       return segments[segments.length -1].charAt(0).toUpperCase() + segments[segments.length -1].slice(1);
@@ -31,7 +29,7 @@ export function MainHeader() {
       <div className="flex-1">
         <h1 className="text-xl font-semibold font-headline">{getPageTitle()}</h1>
       </div>
-      <UserNav />
+      {/* UserNav removed as authentication is removed */}
     </header>
   );
 }
