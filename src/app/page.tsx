@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PublicNavbar } from "@/components/layout/public-navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react"; // Added Layers icon
 import { Logo } from "@/components/icons";
 
 export default function LandingPage() {
@@ -29,10 +29,16 @@ export default function LandingPage() {
             Access all features instantly, completely free.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in-0 slide-in-from-bottom-10 delay-500 duration-700">
-            <Button size="lg" asChild className="shadow-lg hover:shadow-primary/30 transition-shadow px-10 py-3 text-lg">
+            <Button size="lg" asChild className="shadow-lg hover:shadow-primary/30 transition-shadow text-lg">
               <Link href="/dashboard">
                 Access The App
                 <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="shadow-md hover:shadow-accent/20 transition-shadow text-lg">
+              <Link href="/integrations">
+                Explore Integrations
+                <Layers className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
