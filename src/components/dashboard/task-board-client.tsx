@@ -106,16 +106,7 @@ export function TaskBoardClient() {
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12"></TableHead> {/* Drag handle */}
-                  <TableHead className="min-w-[250px]">Task Name</TableHead>
-                  <TableHead>Assignee</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead className="w-[150px]">Progress</TableHead>
-                  <TableHead className="w-12 text-right">Actions</TableHead>
-                </TableRow>
+                <TableRow><TableHead className="w-12"></TableHead><TableHead className="min-w-[250px]">Task Name</TableHead><TableHead>Assignee</TableHead><TableHead>Status</TableHead><TableHead>Priority</TableHead><TableHead>Due Date</TableHead><TableHead className="w-[150px]">Progress</TableHead><TableHead className="w-12 text-right">Actions</TableHead></TableRow>
               </TableHeader>
               <TableBody>
                 {group.tasks.map((task) => (
@@ -257,4 +248,3 @@ export function TaskBoardClient() {
     </div>
   );
 }
-
