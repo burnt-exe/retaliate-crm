@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -16,6 +17,7 @@ import {
   SidebarInset,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { SheetTitle } from "@/components/ui/sheet"; // Import SheetTitle
 import { mainNavItems, secondaryNavItems, NavItem } from "@/components/layout/sidebar-nav-items";
 import { MainHeader } from "@/components/layout/main-header";
 import { Logo } from "@/components/icons";
@@ -32,10 +34,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider defaultOpen>
       <Sidebar variant="sidebar" collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader className="p-4">
-          <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-            <Logo className="h-8 w-8 text-sidebar-primary-foreground" sizes="32px" />
-            <span className="font-semibold text-lg text-sidebar-foreground group-data-[collapsible=icon]:hidden font-headline">Retaliate CRM</span>
-          </Link>
+          {/* For accessibility with Sheet/Dialog, the title needs to be explicitly marked.
+              When the sidebar is a sheet (mobile), this Link content acts as the title.
+              We use SheetTitle to satisfy Radix UI's accessibility requirements.
+              The SheetTitle component itself will apply appropriate styling. */}
+          <SheetTitle asChild>
+            <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+              <Logo className="h-8 w-8 text-sidebar-primary-foreground" sizes="32px" />
+              <span className="font-semibold text-lg text-sidebar-foreground group-data-[collapsible=icon]:hidden font-headline">Retaliate CRM</span>
+            </Link>
+          </SheetTitle>
         </SidebarHeader>
         <SidebarContent className="p-2 flex-grow">
           <SidebarMenu>

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
 // Simplified nav links for a cleaner look
@@ -48,12 +48,12 @@ export function PublicNavbar() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
               <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-border">
+                <SheetHeader className="p-6 border-b border-border">
                    <Link href="/" className="flex items-center space-x-2">
                       <Logo className="h-8 w-8 text-primary" sizes="32px"/>
-                      <span className="font-bold font-headline text-lg text-primary">Retaliate CRM</span>
+                      <SheetTitle className="font-bold font-headline text-lg text-primary">Retaliate CRM</SheetTitle>
                     </Link>
-                </div>
+                </SheetHeader>
                 <nav className="flex flex-col gap-4 p-6 flex-grow">
                   {navLinks.map((link) => (
                     <Link
