@@ -16,14 +16,17 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarSeparator,
+  useSidebar, // Import useSidebar
 } from "@/components/ui/sidebar";
-import { SheetTitle } from "@/components/ui/sheet"; // Import SheetTitle
-import { mainNavItems, secondaryNavItems, NavItem } from "@/components/layout/sidebar-nav-items";
+import { SheetTitle } from "@/components/ui/sheet";
+import { mainNavItems, secondaryNavItems, type NavItem } from "@/components/layout/sidebar-nav-items";
 import { MainHeader } from "@/components/layout/main-header";
 import { Logo } from "@/components/icons";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+// New inner component to use the useSidebar hook correctly
+function MainAppStructure({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { isMobile } = useSidebar(); // Get isMobile from context
 
   const isActive = (item: NavItem) => {
     if (item.href === "/dashboard" && pathname === "/") return true;
@@ -31,19 +34,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   };
   
   return (
-    <SidebarProvider defaultOpen>
+    <>
       <Sidebar variant="sidebar" collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader className="p-4">
-          {/* For accessibility with Sheet/Dialog, the title needs to be explicitly marked.
-              When the sidebar is a sheet (mobile), this Link content acts as the title.
-              We use SheetTitle to satisfy Radix UI's accessibility requirements.
-              The SheetTitle component itself will apply appropriate styling. */}
-          <SheetTitle asChild>
+          {isMobile ? (
+            <SheetTitle asChild>
+              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+                <Logo className="h-8 w-8 text-sidebar-primary-foreground" sizes="32px" />
+                <span className="font-semibold text-lg text-sidebar-foreground group-data-[collapsible=icon]:hidden font-headline">Retaliate CRM</span>
+              </Link>
+            </SheetTitle>
+          ) : (
+            // On desktop, no SheetTitle is needed as it's not a dialog
             <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
               <Logo className="h-8 w-8 text-sidebar-primary-foreground" sizes="32px" />
               <span className="font-semibold text-lg text-sidebar-foreground group-data-[collapsible=icon]:hidden font-headline">Retaliate CRM</span>
             </Link>
-          </SheetTitle>
+          )}
         </SidebarHeader>
         <SidebarContent className="p-2 flex-grow">
           <SidebarMenu>
@@ -95,6 +102,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </SidebarInset>
+    </>
+  );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider defaultOpen>
+      <MainAppStructure>{children}</MainAppStructure>
     </SidebarProvider>
   );
 }
