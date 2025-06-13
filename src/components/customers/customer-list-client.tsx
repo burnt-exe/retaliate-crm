@@ -10,16 +10,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MoreHorizontal, Edit, Trash2, Filter, FileText, Activity, Brain } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Filter, FileText, Activity, Brain, Users } from "lucide-react";
 import { mockCustomers, Customer, getAllUniqueCustomerTags } from "@/lib/mock-data";
 import { CustomerFormDialog } from "./customer-form-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { CustomerDetailsDialog } from "./customer-details-dialog";
+import { LogInteractionDialog } from "./log-interaction-dialog";
+
+export interface InteractionData {
+  interactionType: string;
+  interactionDate: Date;
+  interactionNotes: string;
+}
 
 export function CustomerListClient() {
   const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>("All Tags");
   const { toast } = useToast();
+
+  const [selectedCustomerForDetails, setSelectedCustomerForDetails] = useState<Customer | null>(null);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const [selectedCustomerForLog, setSelectedCustomerForLog] = useState<Customer | null>(null);
+  const [isLogInteractionDialogOpen, setIsLogInteractionDialogOpen] = useState(false);
+
 
   const allTags = useMemo(() => ["All Tags", ...getAllUniqueCustomerTags(customers)], [customers]);
 
@@ -29,11 +43,12 @@ export function CustomerListClient() {
       if (existingIndex > -1) {
         const updatedCustomers = [...prevCustomers];
         updatedCustomers[existingIndex] = customer;
+        toast({ title: "Customer Updated", description: `${customer.name} details have been saved.` });
         return updatedCustomers;
       }
+      toast({ title: "Customer Added", description: `${customer.name} has been added.` });
       return [customer, ...prevCustomers];
     });
-    toast({ title: customer.id.startsWith('cust-') && customer.id !== `cust-${Date.now()}` ? "Customer Updated" : "Customer Added", description: `${customer.name} details have been saved.` });
   };
 
   const handleDeleteCustomer = (customerId: string, customerName: string) => {
@@ -41,12 +56,22 @@ export function CustomerListClient() {
     toast({ title: "Customer Deleted", description: `${customerName} has been removed.`, variant: "destructive" });
   };
 
-  const handleLogInteraction = (customerName: string) => {
-    toast({ title: "Log Interaction (Mock)", description: `An interaction log for ${customerName} would be created here.` });
+  const handleOpenDetailsDialog = (customer: Customer) => {
+    setSelectedCustomerForDetails(customer);
+    setIsDetailsDialogOpen(true);
   };
 
-  const handleViewDetails = (customerName: string) => {
-     toast({ title: "View Details (Mock)", description: `A detailed view for ${customerName} would open here.` });
+  const handleOpenLogInteractionDialog = (customer: Customer) => {
+    setSelectedCustomerForLog(customer);
+    setIsLogInteractionDialogOpen(true);
+  };
+
+  const handleSaveInteraction = (data: InteractionData) => {
+    toast({
+      title: "Interaction Logged (Mock)",
+      description: `${data.interactionType} with ${selectedCustomerForLog?.name} on ${format(data.interactionDate, "PPP")} has been logged. Notes: "${data.interactionNotes.substring(0,30)}..."`,
+    });
+    setIsLogInteractionDialogOpen(false);
   };
 
 
@@ -135,10 +160,10 @@ export function CustomerListClient() {
                           </DropdownMenuItem>
                         }
                       />
-                      <DropdownMenuItem onClick={() => handleViewDetails(customer.name)}>
+                      <DropdownMenuItem onClick={() => handleOpenDetailsDialog(customer)}>
                         <FileText className="mr-2 h-4 w-4" /> View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleLogInteraction(customer.name)}>
+                      <DropdownMenuItem onClick={() => handleOpenLogInteractionDialog(customer)}>
                         <Activity className="mr-2 h-4 w-4" /> Log Interaction
                       </DropdownMenuItem>
                        <DropdownMenuItem asChild>
@@ -156,8 +181,12 @@ export function CustomerListClient() {
               </TableRow>
             )) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                  No customers found.
+                <TableCell colSpan={7} className="h-24 text-center">
+                  <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <Users className="w-10 h-10 mb-2" />
+                    No customers found.
+                    {searchTerm && <span className="text-xs">Try adjusting your search or filters.</span>}
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -167,6 +196,23 @@ export function CustomerListClient() {
       {filteredCustomers.length > 0 && (
          <p className="text-xs text-muted-foreground">Showing {filteredCustomers.length} of {customers.length} customers.</p>
       )}
+
+      {selectedCustomerForDetails && (
+        <CustomerDetailsDialog
+          customer={selectedCustomerForDetails}
+          isOpen={isDetailsDialogOpen}
+          onOpenChange={setIsDetailsDialogOpen}
+        />
+      )}
+      {selectedCustomerForLog && (
+        <LogInteractionDialog
+          customer={selectedCustomerForLog}
+          isOpen={isLogInteractionDialogOpen}
+          onOpenChange={setIsLogInteractionDialogOpen}
+          onSave={handleSaveInteraction}
+        />
+      )}
     </div>
   );
 }
+
