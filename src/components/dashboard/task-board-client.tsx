@@ -14,6 +14,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { mockTaskGroups, TaskGroup, Task, statuses, priorities, assignees } from "@/lib/mock-data";
 import { PlusCircle, MoreHorizontal, Edit2, Trash2, GripVertical, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const getStatusBadgeVariant = (status: Task['status']): React.ComponentProps<typeof Badge>['variant'] => {
   switch (status) {
@@ -24,7 +25,7 @@ const getStatusBadgeVariant = (status: Task['status']): React.ComponentProps<typ
     case 'Review':
       return 'default';
     case 'Done':
-      return 'outline'; // Will add a check icon
+      return 'outline'; 
     default:
       return 'default';
   }
@@ -45,7 +46,8 @@ const getPriorityBadgeVariant = (priority: Task['priority']): React.ComponentPro
 
 export function TaskBoardClient() {
   const [taskGroups, setTaskGroups] = useState<TaskGroup[]>(mockTaskGroups);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null); // For future inline editing if needed
+  const [draggedTaskInfo, setDraggedTaskInfo] = useState<{groupId: string, taskId: string} | null>(null);
 
   const handleUpdateTask = (groupId: string, taskId: string, field: keyof Task, value: any) => {
     setTaskGroups(prevGroups =>
@@ -92,6 +94,53 @@ export function TaskBoardClient() {
     );
   };
 
+  const handleDragStart = (groupId: string, taskId: string) => {
+    setDraggedTaskInfo({ groupId, taskId });
+  };
+
+  const handleDrop = (targetGroupId: string, targetTaskId: string) => {
+    if (!draggedTaskInfo) return;
+    if (draggedTaskInfo.groupId !== targetGroupId) {
+      // For now, only allow reordering within the same group
+      console.warn("Cross-group drag-and-drop not implemented yet.");
+      setDraggedTaskInfo(null); // Reset dragged item if drop is invalid
+      return;
+    }
+    if (draggedTaskInfo.taskId === targetTaskId) {
+      setDraggedTaskInfo(null); // Dropped on itself
+      return;
+    }
+
+    setTaskGroups(prevGroups => 
+      prevGroups.map(group => {
+        if (group.id === targetGroupId) {
+          const tasks = [...group.tasks];
+          const draggedItemIndex = tasks.findIndex(t => t.id === draggedTaskInfo.taskId);
+          
+          if (draggedItemIndex === -1) return group; // Should not happen
+
+          const [draggedItem] = tasks.splice(draggedItemIndex, 1); // Remove item
+          
+          const targetItemIndex = tasks.findIndex(t => t.id === targetTaskId);
+          
+          if (targetItemIndex === -1) { // Should not happen, but as fallback append
+            tasks.push(draggedItem);
+          } else {
+            // Insert the dragged item before the target item
+            tasks.splice(targetItemIndex, 0, draggedItem);
+          }
+          return { ...group, tasks };
+        }
+        return group;
+      })
+    );
+    setDraggedTaskInfo(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTaskInfo(null);
+  };
+
 
   return (
     <div className="space-y-6">
@@ -110,7 +159,18 @@ export function TaskBoardClient() {
               </TableHeader>
               <TableBody>
                 {group.tasks.map((task) => (
-                  <TableRow key={task.id} className="hover:bg-muted/50 transition-colors">
+                  <TableRow 
+                    key={task.id} 
+                    draggable={true}
+                    onDragStart={() => handleDragStart(group.id, task.id)}
+                    onDragOver={(e) => e.preventDefault()} // Necessary to allow dropping
+                    onDrop={() => handleDrop(group.id, task.id)}
+                    onDragEnd={handleDragEnd}
+                    className={cn(
+                      "hover:bg-muted/50 transition-colors",
+                      draggedTaskInfo?.taskId === task.id && "opacity-50 bg-slate-200 dark:bg-slate-700"
+                    )}
+                  >
                     <TableCell className="cursor-grab p-1 text-center">
                       <GripVertical className="h-5 w-5 text-muted-foreground inline-block" />
                     </TableCell>
