@@ -10,7 +10,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Customer } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
-import { Activity, CalendarDays, Edit3, MessageSquare, PhoneCall } from "lucide-react"; // Added more specific icons
+import { Activity, CalendarDays, Edit3, MessageSquare, PhoneCall, Mail, Users } from "lucide-react"; // Added Mail and Users
 import type { InteractionData } from "./customer-list-client";
 
 interface LogInteractionDialogProps {
@@ -130,19 +130,3 @@ export function LogInteractionDialog({ customer, isOpen, onOpenChange, onSave }:
   );
 }
 
-// Added for icon consistency, can be moved to a shared types file if needed
-const Users = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-);
-
-const Mail = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <rect width="20" height="16" x="2" y="4" rx="2"/>
-    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-  </svg>
-);
