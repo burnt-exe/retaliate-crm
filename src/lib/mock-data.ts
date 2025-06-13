@@ -1,13 +1,15 @@
 
 import type { LucideIcon } from 'lucide-react';
 import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon, Files, Cloud, Package, Archive, Github, FolderKanban, Server } from 'lucide-react';
+import type { DateRange } from 'react-day-picker';
 
 export interface Task {
   id: string;
   name: string;
   assignee: { name: string; avatarUrl: string; fallback: string };
-  status: 'To Do' | 'In Progress' | 'Review' | 'Done';
-  dueDate: string;
+  status: string; 
+  startDate: string; // Renamed from dueDate
+  endDate?: string;  // New optional field
   progress: number;
   priority: 'Low' | 'Medium' | 'High';
 }
@@ -23,19 +25,19 @@ export const mockTaskGroups: TaskGroup[] = [
     id: 'group-1',
     name: 'Q4 Campaign Launch',
     tasks: [
-      { id: 'task-1', name: 'Draft initial campaign brief', assignee: { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' }, status: 'Done', dueDate: '2024-10-15', progress: 100, priority: 'High' },
-      { id: 'task-2', name: 'Design ad creatives', assignee: { name: 'Bob The Builder', avatarUrl: 'https://placehold.co/40x40.png?text=BB', fallback: 'BB' }, status: 'In Progress', dueDate: '2024-10-25', progress: 60, priority: 'High' },
-      { id: 'task-3', name: 'Develop landing page', assignee: { name: 'Carol Danvers', avatarUrl: 'https://placehold.co/40x40.png?text=CD', fallback: 'CD' }, status: 'To Do', dueDate: '2024-11-05', progress: 10, priority: 'Medium' },
-      { id: 'task-4', name: 'Setup analytics tracking', assignee: { name: 'David Copperfield', avatarUrl: 'https://placehold.co/40x40.png?text=DC', fallback: 'DC' }, status: 'Review', dueDate: '2024-10-30', progress: 90, priority: 'Medium' },
+      { id: 'task-1', name: 'Draft initial campaign brief', assignee: { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' }, status: 'Done', startDate: '2024-10-01', endDate: '2024-10-15', progress: 100, priority: 'High' },
+      { id: 'task-2', name: 'Design ad creatives', assignee: { name: 'Bob The Builder', avatarUrl: 'https://placehold.co/40x40.png?text=BB', fallback: 'BB' }, status: 'In Progress', startDate: '2024-10-16', endDate: '2024-10-25', progress: 60, priority: 'High' },
+      { id: 'task-3', name: 'Develop landing page', assignee: { name: 'Carol Danvers', avatarUrl: 'https://placehold.co/40x40.png?text=CD', fallback: 'CD' }, status: 'To Do', startDate: '2024-10-26', endDate: '2024-11-05', progress: 10, priority: 'Medium' },
+      { id: 'task-4', name: 'Setup analytics tracking', assignee: { name: 'David Copperfield', avatarUrl: 'https://placehold.co/40x40.png?text=DC', fallback: 'DC' }, status: 'Review', startDate: '2024-10-20', endDate: '2024-10-30', progress: 90, priority: 'Medium' },
     ],
   },
   {
     id: 'group-2',
     name: 'New Feature Development',
     tasks: [
-      { id: 'task-5', name: 'User story mapping', assignee: { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' }, status: 'Done', dueDate: '2024-09-30', progress: 100, priority: 'High' },
-      { id: 'task-6', name: 'Backend API implementation', assignee: { name: 'Frankenstein Monster', avatarUrl: 'https://placehold.co/40x40.png?text=FM', fallback: 'FM' }, status: 'In Progress', dueDate: '2024-11-15', progress: 45, priority: 'High' },
-      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', dueDate: '2024-11-20', progress: 0, priority: 'Medium' },
+      { id: 'task-5', name: 'User story mapping', assignee: { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' }, status: 'Done', startDate: '2024-09-20', endDate: '2024-09-30', progress: 100, priority: 'High' },
+      { id: 'task-6', name: 'Backend API implementation', assignee: { name: 'Frankenstein Monster', avatarUrl: 'https://placehold.co/40x40.png?text=FM', fallback: 'FM' }, status: 'In Progress', startDate: '2024-11-01', endDate: '2024-11-15', progress: 45, priority: 'High' },
+      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', startDate: '2024-11-16', progress: 0, priority: 'Medium' }, // No end date example
     ],
   },
 ];
@@ -119,7 +121,7 @@ export const mockStorageServices: StorageService[] = [
 ];
 
 
-export const statuses: Task['status'][] = ['To Do', 'In Progress', 'Review', 'Done'];
+export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done']; // Now a simple string array
 export const priorities: Task['priority'][] = ['Low', 'Medium', 'High'];
 export const assignees = [
   { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' },
