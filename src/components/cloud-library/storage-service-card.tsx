@@ -18,12 +18,34 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
   const { toast } = useToast();
 
   const handleToggleConnection = () => {
-    setIsConnected(!isConnected);
-    toast({
-      title: `${service.name} ${!isConnected ? "Connected" : "Disconnected"}`,
-      description: `Connection to ${service.name} has been ${!isConnected ? "established" : "terminated"}.`,
-    });
+    const newConnectedState = !isConnected;
+    setIsConnected(newConnectedState);
     // Here you would typically call an API to update the connection status
+
+    if (newConnectedState) {
+      toast({
+        title: `Connecting to ${service.name}`,
+        description: `Attempting to link ${service.name} and sync data with Retaliate CRM. This is a mock action.`,
+      });
+    } else {
+      toast({
+        title: `Disconnecting ${service.name}`,
+        description: `Connection to ${service.name} is being terminated. This is a mock action.`,
+      });
+    }
+  };
+  
+  const handleButtonClick = () => {
+    // If not connected, clicking the button should initiate connection
+    // If already connected, clicking "Manage" could open a settings dialog (mocked for now)
+    if (!isConnected) {
+      handleToggleConnection(); // This will also show the toast
+    } else {
+      toast({
+        title: `Managing ${service.name}`,
+        description: `Options to manage your ${service.name} connection and sync settings would appear here. This is a mock action.`,
+      });
+    }
   };
 
   return (
@@ -55,7 +77,7 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
         <Button 
           variant={isConnected ? "outline" : "default"} 
           size="sm" 
-          onClick={handleToggleConnection}
+          onClick={handleButtonClick}
           className="w-full sm:w-auto"
         >
           {isConnected ? "Manage" : "Connect"}
@@ -64,3 +86,4 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
     </Card>
   );
 }
+

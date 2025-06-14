@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import type { Integration } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface IntegrationCardProps {
   integration: Integration;
@@ -14,11 +15,39 @@ interface IntegrationCardProps {
 
 export function IntegrationCard({ integration }: IntegrationCardProps) {
   const [isConnected, setIsConnected] = useState(integration.connected);
+  const { toast } = useToast();
 
   const handleToggleConnection = () => {
-    setIsConnected(!isConnected);
+    const newConnectedState = !isConnected;
+    setIsConnected(newConnectedState);
     // Here you would typically call an API to update the connection status
+
+    if (newConnectedState) {
+      toast({
+        title: `Connecting to ${integration.name}`,
+        description: `Attempting to link ${integration.name} and sync data with Retaliate CRM. This is a mock action.`,
+      });
+    } else {
+      toast({
+        title: `Disconnecting ${integration.name}`,
+        description: `Connection to ${integration.name} is being terminated. This is a mock action.`,
+      });
+    }
   };
+
+  const handleButtonClick = () => {
+    // If not connected, clicking the button should initiate connection
+    // If already connected, clicking "Manage" could open a settings dialog (mocked for now)
+    if (!isConnected) {
+      handleToggleConnection(); // This will also show the toast
+    } else {
+      toast({
+        title: `Managing ${integration.name}`,
+        description: `Options to manage your ${integration.name} integration settings would appear here. This is a mock action.`,
+      });
+    }
+  };
+
 
   return (
     <Card className="flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:scale-[1.03]">
@@ -46,10 +75,10 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
             {isConnected ? "Connected" : "Disconnected"}
           </label>
         </div>
-        <Button 
-          variant={isConnected ? "outline" : "default"} 
-          size="sm" 
-          onClick={handleToggleConnection}
+        <Button
+          variant={isConnected ? "outline" : "default"}
+          size="sm"
+          onClick={handleButtonClick}
           className="w-full sm:w-auto"
         >
           {isConnected ? "Manage" : "Connect"}
@@ -58,3 +87,4 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
     </Card>
   );
 }
+
