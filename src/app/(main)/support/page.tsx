@@ -1,9 +1,10 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { LifeBuoy, MessageSquare, MessageCircle, Mail as MailIcon, BookOpen, ListChecks, HelpCircle } from "lucide-react"; // Renamed Mail to MailIcon to avoid conflict
+import { LifeBuoy, MessageSquare, MessageCircle, Mail as MailIcon, BookOpen, ListChecks, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { AiSupportAssistant } from "@/components/support/ai-support-assistant";
@@ -39,9 +40,15 @@ export default function SupportPage() {
   const { toast } = useToast();
 
   const handleSupportAction = (action: string) => {
+    let description = `If this were a live app, the '${action}' process would begin now.`;
+    if (action === "Teams Chat/Call" || action === "WhatsApp Chat/Call") {
+      description += ` You can also reach us at +27 68 649 3591.`;
+    } else {
+      description += ` For critical issues, please use the contact methods provided.`;
+    }
     toast({
       title: "Support Action (Mock)",
-      description: `If this were a live app, the '${action}' process would begin now. For critical issues, please use the contact methods provided.`,
+      description: description,
     });
   };
 
@@ -70,9 +77,14 @@ export default function SupportPage() {
             <Button className="w-full" onClick={() => handleSupportAction("WhatsApp Chat/Call")}>
               <MessageCircle className="mr-2 h-5 w-5" /> Chat/Call on WhatsApp
             </Button>
-            <Button variant="outline" className="w-full" onClick={() => handleSupportAction("Email Support")}>
-              <MailIcon className="mr-2 h-5 w-5" /> Email Support
+            <Button variant="outline" className="w-full" asChild>
+              <a href="mailto:support@skunkworks.africa">
+                <MailIcon className="mr-2 h-5 w-5" /> Email Support (support@skunkworks.africa)
+              </a>
             </Button>
+             <p className="text-xs text-muted-foreground text-center">
+              Or call us directly at: <a href="tel:+27686493591" className="text-primary hover:underline">+27 68 649 3591</a>
+            </p>
           </CardContent>
         </Card>
 
@@ -110,8 +122,8 @@ export default function SupportPage() {
             </div>
              <div className="pt-4 border-t">
                 <h3 className="text-lg font-semibold mb-2 flex items-center"><BookOpen className="mr-2 h-5 w-5 text-secondary" /> User Documentation</h3>
-                 <Button variant="outline" className="w-full" onClick={() => handleSupportAction("View Full Documentation")}>
-                    View Full Documentation
+                 <Button variant="outline" className="w-full" asChild>
+                    <Link href="/documentation">View Full Documentation</Link>
                 </Button>
             </div>
           </CardContent>

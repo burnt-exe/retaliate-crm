@@ -6,6 +6,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; // Import ShadCN Input
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   userQuery: z.string().min(10, "Please describe your issue in at least 10 characters.").max(1000, "Query is too long."),
   userName: z.string().optional(),
-  userEmail: z.string().email({ message: "Please enter a valid email." }).optional(),
+  userEmail: z.string().email({ message: "Please enter a valid email." }).optional().or(z.literal("")), // Allow empty string
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -40,7 +41,10 @@ export function AiSupportAssistant() {
     setIsLoading(true);
     setAiResponse(null);
     try {
-      const result = await technicalSupportAgent(data);
+      const result = await technicalSupportAgent({
+        ...data,
+        userEmail: data.userEmail === "" ? undefined : data.userEmail, // Pass undefined if empty
+      });
       setAiResponse(result);
       toast({
         title: "AI Assistant Responded",
@@ -99,7 +103,7 @@ export function AiSupportAssistant() {
                   <FormItem>
                     <FormLabel>Your Name (Optional)</FormLabel>
                     <FormControl>
-                      <input {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Jane Doe" />
+                      <Input placeholder="Jane Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,7 +116,7 @@ export function AiSupportAssistant() {
                   <FormItem>
                     <FormLabel>Your Email (Optional)</FormLabel>
                     <FormControl>
-                      <input type="email" {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="you@example.com"/>
+                      <Input type="email" placeholder="you@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,7 +162,7 @@ export function AiSupportAssistant() {
             </div>
           )}
           
-          <div className={`p-3 rounded-md text-sm ${aiResponse.escalationNeeded ? 'bg-destructive/10 border border-destructive/20 text-destructive-foreground' : 'bg-green-500/10 border border-green-500/20 text-green-700'}`}>
+          <div className={`p-3 rounded-md text-sm w-full ${aiResponse.escalationNeeded ? 'bg-destructive/10 border border-destructive/20 text-destructive-foreground' : 'bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-300'}`}>
              {aiResponse.escalationNeeded && <AlertTriangle className="inline-block mr-2 h-5 w-5 mb-0.5" />}
             <p className="font-medium">{aiResponse.furtherAssistanceMessage}</p>
             {aiResponse.escalationNeeded && aiResponse.ticketId && (
