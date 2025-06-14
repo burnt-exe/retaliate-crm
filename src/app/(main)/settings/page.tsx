@@ -8,11 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Settings as SettingsIcon, Bell, Palette, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/components/theme/theme-provider";
 
 export default function SettingsPage() {
   const { toast } = useToast();
+  const { theme, setTheme, fontSize, setFontSize } = useTheme();
 
-  const handleSettingChange = (settingName: string, value: any) => {
+  const handleNotificationSettingChange = (settingName: string, value: any) => {
     toast({
       title: "Setting Updated (Mock)",
       description: `${settingName} updated to ${value}. (This is a mock action)`,
@@ -38,15 +40,15 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="email-notifications">Email Notifications</Label>
-              <Switch id="email-notifications" defaultChecked onCheckedChange={(checked) => handleSettingChange("Email Notifications", checked)} />
+              <Switch id="email-notifications" defaultChecked onCheckedChange={(checked) => handleNotificationSettingChange("Email Notifications", checked)} />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="app-notifications">In-App Notifications</Label>
-              <Switch id="app-notifications" defaultChecked onCheckedChange={(checked) => handleSettingChange("In-App Notifications", checked)} />
+              <Switch id="app-notifications" defaultChecked onCheckedChange={(checked) => handleNotificationSettingChange("In-App Notifications", checked)} />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="sms-notifications">SMS Alerts (Feature not active)</Label>
-              <Switch id="sms-notifications" disabled onCheckedChange={(checked) => handleSettingChange("SMS Alerts", checked)} />
+              <Switch id="sms-notifications" disabled onCheckedChange={(checked) => handleNotificationSettingChange("SMS Alerts", checked)} />
             </div>
           </CardContent>
         </Card>
@@ -61,19 +63,26 @@ export default function SettingsPage() {
               <Label htmlFor="theme-select">Theme</Label>
               <select
                 id="theme-select"
-                defaultValue="system"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as "light" | "dark" | "system")}
                 className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                onChange={(e) => handleSettingChange("Theme", e.target.value)}
               >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="system">System Default</option>
               </select>
-               <p className="text-xs text-muted-foreground mt-1">(Theme switching is a mock-up for this demo and doesn't change `globals.css` dynamically)</p>
             </div>
             <div>
-              <Label htmlFor="font-size">Font Size</Label>
-              <Input id="font-size" type="number" defaultValue="14" min="10" max="20" onChange={(e) => handleSettingChange("Font Size", `${e.target.value}px`)} />
+              <Label htmlFor="font-size">Font Size (Current: {fontSize}px)</Label>
+              <Input 
+                id="font-size" 
+                type="number" 
+                value={fontSize} 
+                min="10" 
+                max="24" 
+                onChange={(e) => setFontSize(parseInt(e.target.value, 10))} 
+              />
+               <p className="text-xs text-muted-foreground mt-1">Adjusts base font size (affects rem units). Recommended: 12px-20px.</p>
             </div>
           </CardContent>
         </Card>
@@ -84,14 +93,14 @@ export default function SettingsPage() {
             <CardDescription>Manage security settings and data preferences.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full" onClick={() => handleSettingChange("Change Password", "Initiated")}>
+            <Button variant="outline" className="w-full" onClick={() => handleNotificationSettingChange("Change Password", "Initiated")}>
               Change Password
             </Button>
             <div className="flex items-center justify-between">
               <Label htmlFor="two-factor-auth">Two-Factor Authentication</Label>
-              <Switch id="two-factor-auth" onCheckedChange={(checked) => handleSettingChange("Two-Factor Authentication", checked)} />
+              <Switch id="two-factor-auth" onCheckedChange={(checked) => handleNotificationSettingChange("Two-Factor Authentication", checked)} />
             </div>
-            <Button variant="link" className="p-0 h-auto text-primary" onClick={() => handleSettingChange("Export Data", "Requested")}>
+            <Button variant="link" className="p-0 h-auto text-primary" onClick={() => handleNotificationSettingChange("Export Data", "Requested")}>
               Export My Data
             </Button>
           </CardContent>
@@ -109,3 +118,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+
