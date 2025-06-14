@@ -8,8 +8,8 @@ export interface Task {
   name: string;
   assignee: { name: string; avatarUrl: string; fallback: string };
   status: string; 
-  startDate: string; // Renamed from dueDate
-  endDate?: string;  // New optional field
+  startDate: string; 
+  endDate?: string;  
   progress: number;
   priority: 'Low' | 'Medium' | 'High';
 }
@@ -37,7 +37,7 @@ export const mockTaskGroups: TaskGroup[] = [
     tasks: [
       { id: 'task-5', name: 'User story mapping', assignee: { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' }, status: 'Done', startDate: '2024-09-20', endDate: '2024-09-30', progress: 100, priority: 'High' },
       { id: 'task-6', name: 'Backend API implementation', assignee: { name: 'Frankenstein Monster', avatarUrl: 'https://placehold.co/40x40.png?text=FM', fallback: 'FM' }, status: 'In Progress', startDate: '2024-11-01', endDate: '2024-11-15', progress: 45, priority: 'High' },
-      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', startDate: '2024-11-16', progress: 0, priority: 'Medium' }, // No end date example
+      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', startDate: '2024-11-16', progress: 0, priority: 'Medium' }, 
     ],
   },
 ];
@@ -48,7 +48,7 @@ export interface Customer {
   email: string;
   phone: string;
   company: string;
-  lastContact: string; // YYYY-MM-DD
+  lastContact: string; 
   tags: string[];
   notes?: string;
 }
@@ -84,6 +84,14 @@ export const mockIntegrations: Integration[] = [
     connected: false,
   },
   {
+    id: 'integ-gws',
+    name: 'Google Workspace',
+    description: 'Integrate with Gmail, Calendar, Drive, Docs, Sheets, and Meet for team collaboration.',
+    icon: UsersIcon, // Using UsersIcon as a placeholder for the collaborative suite nature
+    category: 'Productivity',
+    connected: false,
+  },
+  {
     id: 'integ-softphone',
     name: 'Softphone (VoIP/SIP)',
     description: 'Integrate your VoIP/SIP softphone for direct client calls and internal team communication.',
@@ -92,9 +100,9 @@ export const mockIntegrations: Integration[] = [
     connected: false,
   },
   {
-    id: 'integ-bulkmail',
-    name: 'Bulk Email (Microsoft 365)',
-    description: 'Send bulk emails using your Microsoft 365 tenant for marketing campaigns.',
+    id: 'integ-bulkmail-m365', // Clarified ID
+    name: 'Bulk Email (MS Exchange Online)',
+    description: 'Send bulk emails using your Microsoft 365 Exchange Online tenant for marketing campaigns.',
     icon: Mail,
     category: 'Marketing',
     connected: false,
@@ -121,7 +129,7 @@ export const mockStorageServices: StorageService[] = [
 ];
 
 
-export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done']; // Now a simple string array
+export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done']; 
 export const priorities: Task['priority'][] = ['Low', 'Medium', 'High'];
 export const assignees = [
   { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' },
@@ -138,3 +146,4 @@ export const getAllUniqueCustomerTags = (customers: Customer[]): string[] => {
   }, new Set<string>());
   return Array.from(allTags);
 };
+
