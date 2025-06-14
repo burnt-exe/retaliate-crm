@@ -3,65 +3,108 @@ import { PublicNavbar } from "@/components/layout/public-navbar";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Zap, Users, ShieldCheck, Star } from "lucide-react";
+import { CheckCircle, Zap, Users, ShieldCheck, Star, Layers, Award } from "lucide-react";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 
-const pricingTiers = [
+interface PricingTier {
+  name: string;
+  icon: LucideIcon;
+  priceDisplay: string;
+  priceSuffix: string;
+  annualSummary?: string;
+  description: string;
+  features: string[];
+  ctaText: string;
+  ctaLink: string;
+  highlight?: boolean;
+}
+
+const pricingTiers: PricingTier[] = [
+  {
+    name: "Free",
+    icon: Star,
+    priceDisplay: "$0",
+    priceSuffix: "free forever",
+    annualSummary: "Up to 2 seats",
+    description: "For individuals looking to keep track of their work.",
+    features: [
+      "Free includes:",
+      "Up to 3 boards",
+      "Basic CRM functionalities",
+      "Limited AI Engagement Analyzer access",
+    ],
+    ctaText: "Try for free",
+    ctaLink: "/dashboard",
+  },
   {
     name: "Basic",
     icon: Users,
-    monthlyPrice: 19,
-    annualPrice: 15,
-    annualBillingText: "per user/month, billed annually ($180/year)",
-    description: "For individuals and small teams getting started with CRM.",
+    priceDisplay: "$9",
+    priceSuffix: "seat / month",
+    annualSummary: "Total $90 / month Billed annually",
+    description: "Manage all your team's work in one place.",
     features: [
-      "Core CRM functionalities",
+      "Includes free, plus:",
+      "Unlimited free viewers",
       "Up to 500 customer contacts",
-      "Basic AI Engagement Analyzer access",
       "Standard Integrations (2)",
       "Email support",
     ],
-    ctaText: "Get Started",
-    ctaLink: "/dashboard", // Or a signup page
-    highlight: false,
+    ctaText: "Try for free",
+    ctaLink: "/dashboard",
   },
   {
     name: "Standard",
     icon: Zap,
-    monthlyPrice: 49,
-    annualPrice: 39,
-    annualBillingText: "per user/month, billed annually ($468/year)",
-    description: "For growing businesses needing more power and integrations.",
+    priceDisplay: "$12",
+    priceSuffix: "seat / month",
+    annualSummary: "Total $120 / month Billed annually",
+    description: "Collaborate & optimize your work across teams.",
     features: [
-      "All Basic features",
+      "Includes basic, plus:",
+      "Timeline & Gantt views",
       "Up to 5,000 customer contacts",
-      "Full AI Engagement Analyzer",
       "Advanced Integrations (5)",
       "Microsoft Teams & Cloud Library Sync",
+    ],
+    ctaText: "Try for free",
+    ctaLink: "/dashboard",
+  },
+  {
+    name: "Pro",
+    icon: Award,
+    priceDisplay: "$19",
+    priceSuffix: "seat / month",
+    annualSummary: "Total $190 / month Billed annually",
+    description: "Streamline complex workflows at scale.",
+    features: [
+      "Includes standard, plus:",
+      "Private boards",
+      "Full AI Engagement Analyzer",
       "Priority email & chat support",
     ],
-    ctaText: "Choose Standard",
+    ctaText: "Try for free",
     ctaLink: "/dashboard",
     highlight: true,
   },
   {
     name: "Enterprise",
-    icon: ShieldCheck,
-    monthlyPrice: null, // Custom
-    annualPrice: null, // Custom
-    annualBillingText: "Customized for your business needs",
+    icon: Layers, // Changed from ShieldCheck to Layers
+    priceDisplay: "Custom",
+    priceSuffix: "",
+    annualSummary: "Get exclusive features for your organization",
     description: "Tailored solutions for large organizations with specific requirements.",
     features: [
-      "All Standard features",
+      "Includes pro, plus:",
+      "Enterprise-scale automations & workflows",
       "Unlimited customer contacts",
       "All available integrations",
       "Custom AI model tuning (mock)",
-      "Dedicated account manager",
-      "Premium 24/7 support & SLA",
+      "Dedicated account manager & SLA",
     ],
-    ctaText: "Contact Sales",
-    ctaLink: "/support", // Or a contact form page
-    highlight: false,
+    ctaText: "Get a quote",
+    ctaLink: "/support",
   },
 ];
 
@@ -84,7 +127,7 @@ export default function PricingPage() {
             <Card
               key={tier.name}
               className={`flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300 ${
-                tier.highlight ? "border-2 border-primary ring-2 ring-primary/20 scale-105" : ""
+                tier.highlight ? "border-2 border-primary ring-2 ring-primary/20 lg:scale-105" : ""
               }`}
             >
               {tier.highlight && (
@@ -93,37 +136,40 @@ export default function PricingPage() {
                 </div>
               )}
               <CardHeader className="items-center text-center">
-                <tier.icon className={`h-12 w-12 mb-4 ${tier.highlight ? 'text-primary' : 'text-muted-foreground'}`} />
+                <tier.icon className={`h-10 w-10 mb-3 ${tier.highlight ? 'text-primary' : 'text-muted-foreground'}`} />
                 <CardTitle className="font-headline text-2xl">{tier.name}</CardTitle>
-                <CardDescription className="min-h-[40px]">{tier.description}</CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow space-y-6">
-                <div className="text-center">
-                  {tier.monthlyPrice !== null ? (
-                    <>
-                      <p className="text-4xl font-bold">
-                        ${tier.monthlyPrice}<span className="text-sm font-normal text-muted-foreground">/user/mo</span>
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Or ${tier.annualPrice}/user/mo billed annually
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-3xl font-bold">Custom</p>
-                  )}
-                  <p className="text-xs text-muted-foreground mt-1 min-h-[30px]">{tier.annualBillingText}</p>
+              <CardContent className="flex-grow space-y-4 pt-0">
+                <div className="text-center min-h-[100px]">
+                  <p className="text-4xl font-bold">
+                    {tier.priceDisplay}
+                    {tier.priceSuffix && <span className="text-sm font-normal text-muted-foreground ml-1">{tier.priceSuffix}</span>}
+                  </p>
+                  {tier.annualSummary && <p className="text-xs text-muted-foreground mt-1">{tier.annualSummary}</p>}
+                </div>
+                <div className="text-center text-sm text-muted-foreground min-h-[60px] mb-4">
+                  {tier.description}
                 </div>
                 <ul className="space-y-2 text-sm">
                   {tier.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <CheckCircle className="mr-2 h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                      {feature}
+                    <li key={index} className={`flex items-start ${feature.startsWith("Includes") ? "mt-3" : ""}`}>
+                      {!feature.startsWith("Includes") && (
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                      )}
+                      <span className={feature.startsWith("Includes") ? "font-semibold text-foreground text-sm" : "text-muted-foreground"}>
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter className="mt-auto">
-                <Button asChild className={`w-full ${tier.highlight ? '' : 'bg-primary/80 hover:bg-primary/90'}`} size="lg">
+              <CardFooter className="mt-auto pt-5 border-t">
+                <Button 
+                  asChild 
+                  className={`w-full ${tier.highlight ? '' : 'bg-primary/90 hover:bg-primary'}`} 
+                  variant={tier.highlight ? 'default' : 'secondary'}
+                  size="lg"
+                >
                   <Link href={tier.ctaLink}>{tier.ctaText}</Link>
                 </Button>
               </CardFooter>
@@ -136,7 +182,7 @@ export default function PricingPage() {
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
                 Our team is ready to assist you in finding the perfect CRM solution for your needs.
                 <br />
-                All plans come with a 14-day money-back guarantee.
+                All paid plans come with a 14-day money-back guarantee.
             </p>
             <Button variant="outline" size="lg" asChild>
                 <Link href="/support">
