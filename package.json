@@ -1,0 +1,24 @@
+{
+  "name": "retaliate-crm",
+  "version": "1.0.0",
+  "description": "crm system",
+  "homepage": "https://github.com/Cyber-Retaliator-Solutions/retaliate-crm#readme",
+  "bugs": {
+    "url": "https://github.com/Cyber-Retaliator-Solutions/retaliate-crm/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cyber-Retaliator-Solutions/retaliate-crm.git"
+  },
+  "license": "MIT",
+  "author": "skunkworks.africa",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@genkit-ai/firebase": "^1.12.0",
+    "firebase": "^11.9.1"
+  }
+}
