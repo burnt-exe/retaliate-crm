@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
-// Simplified nav links for a cleaner look
+// Updated nav links
 const navLinks = [
   { href: "/dashboard", label: "App Demo" },
-  { href: "#about", label: "About" }, // Assuming you might add an 'about' section or link out
-  { href: "#features", label: "Features" }, // Assuming you might add a 'features' section or link out
+  { href: "/about", label: "About" }, 
+  { href: "/features", label: "Features" }, 
 ];
 
 export function PublicNavbar() {
@@ -61,7 +61,6 @@ export function PublicNavbar() {
                       href={link.href}
                       className="flex items-center gap-3 rounded-lg p-3 text-lg font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
-                      {/* Icons removed for a cleaner look */}
                       {link.label}
                     </Link>
                   ))}
