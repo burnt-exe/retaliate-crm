@@ -41,6 +41,15 @@ entryPoint: npm run start
 # Environment variables for your application.
 # For sensitive data, prefer using Firebase's secret management:
 # https://firebase.google.com/docs/app-hosting/configure-backend#manage-secrets
+# IMPORTANT: Ensure you have set the following in your Firebase App Hosting backend's environment variables:
+#   - NEXT_PUBLIC_FIREBASE_API_KEY: For Firebase client-side SDK.
+#   - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: For Firebase client-side SDK.
+#   - NEXT_PUBLIC_FIREBASE_PROJECT_ID: For Firebase client-side SDK.
+#   - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: For Firebase client-side SDK.
+#   - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: For Firebase client-side SDK.
+#   - NEXT_PUBLIC_FIREBASE_APP_ID: For Firebase client-side SDK.
+#   - GOOGLE_API_KEY: For Genkit AI (Google AI plugin) if not using other auth methods.
+#   - FIREBASE_SERVICE_ACCOUNT_JSON or GOOGLE_APPLICATION_CREDENTIALS: If using Firebase Admin SDK with service account keys.
 env:
   - variable: NODE_ENV
     value: production
