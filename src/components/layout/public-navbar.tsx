@@ -10,8 +10,9 @@ import { Menu } from "lucide-react";
 // Updated nav links
 const navLinks = [
   { href: "/dashboard", label: "App Demo" },
-  { href: "/about", label: "About" }, 
   { href: "/features", label: "Features" }, 
+  { href: "/pricing", label: "Pricing" },
+  { href: "/about", label: "About" }, 
 ];
 
 export function PublicNavbar() {
