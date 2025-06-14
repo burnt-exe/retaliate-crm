@@ -22,28 +22,23 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
     setIsConnected(newConnectedState);
     // Here you would typically call an API to update the connection status
 
-    if (newConnectedState) {
-      toast({
-        title: `Connecting to ${integration.name}`,
-        description: `Attempting to link ${integration.name} and sync data with Retaliate CRM. This is a mock action.`,
-      });
-    } else {
-      toast({
-        title: `Disconnecting ${integration.name}`,
-        description: `Connection to ${integration.name} is being terminated. This is a mock action.`,
-      });
-    }
+    // Toast logic moved to handleButtonClick as per previous request
   };
 
   const handleButtonClick = () => {
     // If not connected, clicking the button should initiate connection
     // If already connected, clicking "Manage" could open a settings dialog (mocked for now)
     if (!isConnected) {
-      handleToggleConnection(); // This will also show the toast
+      // Simulate initiating connection
+      setIsConnected(true); // Optimistically set connected state
+      toast({
+        title: `Connecting to ${integration.name}`,
+        description: `Attempting to link ${integration.name}. In a real app, this would involve authentication and data sync setup. This is a mock action.`,
+      });
     } else {
       toast({
         title: `Managing ${integration.name}`,
-        description: `Options to manage your ${integration.name} integration settings would appear here. This is a mock action.`,
+        description: `Options to manage your ${integration.name} integration settings, such as sync preferences or disconnecting, would appear here. This is a mock action.`,
       });
     }
   };
@@ -63,12 +58,12 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
       <CardContent className="flex-grow">
         <CardDescription>{integration.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 sm:flex-row sm:justify-between sm:gap-2">
+      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 md:flex-row md:justify-between md:gap-2">
         <div className="flex items-center space-x-2">
           <Switch
             id={`connect-${integration.id}`}
             checked={isConnected}
-            onCheckedChange={handleToggleConnection}
+            onCheckedChange={handleToggleConnection} // Switch only toggles state, button handles toast
             aria-label={`Connect ${integration.name}`}
           />
           <label htmlFor={`connect-${integration.id}`} className={cn("text-sm font-medium", isConnected ? "text-primary" : "text-muted-foreground")}>
@@ -79,7 +74,7 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
           variant={isConnected ? "outline" : "default"}
           size="sm"
           onClick={handleButtonClick}
-          className="w-full sm:w-auto"
+          className="w-full md:w-auto"
         >
           {isConnected ? "Manage" : "Connect"}
         </Button>
@@ -87,4 +82,3 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
     </Card>
   );
 }
-

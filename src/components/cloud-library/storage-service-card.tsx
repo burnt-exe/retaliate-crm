@@ -20,26 +20,17 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
   const handleToggleConnection = () => {
     const newConnectedState = !isConnected;
     setIsConnected(newConnectedState);
-    // Here you would typically call an API to update the connection status
-
-    if (newConnectedState) {
-      toast({
-        title: `Connecting to ${service.name}`,
-        description: `Attempting to link ${service.name} and sync data with Retaliate CRM. This is a mock action.`,
-      });
-    } else {
-      toast({
-        title: `Disconnecting ${service.name}`,
-        description: `Connection to ${service.name} is being terminated. This is a mock action.`,
-      });
-    }
+    // Toast logic moved to handleButtonClick
   };
   
   const handleButtonClick = () => {
-    // If not connected, clicking the button should initiate connection
-    // If already connected, clicking "Manage" could open a settings dialog (mocked for now)
     if (!isConnected) {
-      handleToggleConnection(); // This will also show the toast
+      // Simulate initiating connection
+      setIsConnected(true); // Optimistically set connected state
+      toast({
+        title: `Connecting to ${service.name}`,
+        description: `Attempting to link ${service.name} and sync data. In a real app, this might open an auth flow. This is a mock action.`,
+      });
     } else {
       toast({
         title: `Managing ${service.name}`,
@@ -62,12 +53,12 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
       <CardContent className="flex-grow">
         <CardDescription>{service.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 sm:flex-row sm:justify-between sm:gap-2">
+      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 md:flex-row md:justify-between md:gap-2">
         <div className="flex items-center space-x-2">
           <Switch
             id={`connect-${service.id}`}
             checked={isConnected}
-            onCheckedChange={handleToggleConnection}
+            onCheckedChange={handleToggleConnection} // Switch only toggles state
             aria-label={`Connect ${service.name}`}
           />
           <label htmlFor={`connect-${service.id}`} className={cn("text-sm font-medium", isConnected ? "text-primary" : "text-muted-foreground")}>
@@ -78,7 +69,7 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
           variant={isConnected ? "outline" : "default"} 
           size="sm" 
           onClick={handleButtonClick}
-          className="w-full sm:w-auto"
+          className="w-full md:w-auto"
         >
           {isConnected ? "Manage" : "Connect"}
         </Button>
@@ -86,4 +77,3 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
     </Card>
   );
 }
-
