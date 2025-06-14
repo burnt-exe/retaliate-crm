@@ -2,56 +2,26 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import type { DateRange } from 'react-day-picker';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DateRangePicker } from "@/components/ui/date-range-picker"; // Changed import
-import { Input } from "@/components/ui/input";
-import { mockTaskGroups, TaskGroup, Task, priorities, assignees, statuses as initialStatuses } from "@/lib/mock-data";
-import { PlusCircle, MoreHorizontal, Edit2, Trash2, GripVertical, Check, Palette } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { mockTaskGroups as initialTaskGroups, type TaskGroup, type Task, assignees as initialAssignees, priorities as initialPriorities, statuses as initialStatuses } from "@/lib/mock-data";
+import { PlusCircle, ListChecks, KanbanSquare, CalendarRange } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
+import { TableView } from './table-view';
+import { KanbanView } from './kanban-view';
+import { RoadmapView } from './roadmap-view';
 
-const getStatusBadgeVariant = (status: Task['status']): React.ComponentProps<typeof Badge>['variant'] => {
-  switch (status.toLowerCase()) {
-    case 'to do':
-      return 'outline';
-    case 'in progress':
-      return 'secondary';
-    case 'review':
-      return 'default';
-    case 'done':
-      return 'outline'; 
-    default:
-      return 'default'; // For custom statuses
-  }
-};
-
-const getPriorityBadgeVariant = (priority: Task['priority']): React.ComponentProps<typeof Badge>['variant'] => {
-  switch (priority) {
-    case 'Low':
-      return 'outline';
-    case 'Medium':
-      return 'secondary';
-    case 'High':
-      return 'destructive';
-    default:
-      return 'default';
-  }
-};
+export type ViewMode = "table" | "board" | "roadmap";
 
 export function TaskBoardClient() {
-  const [taskGroups, setTaskGroups] = useState<TaskGroup[]>(mockTaskGroups);
-  const [editingTask, setEditingTask] = useState<Task | null>(null); 
-  const [draggedTaskInfo, setDraggedTaskInfo] = useState<{groupId: string, taskId: string} | null>(null);
+  const [taskGroups, setTaskGroups] = useState<TaskGroup[]>(initialTaskGroups);
   const [availableStatuses, setAvailableStatuses] = useState<string[]>(initialStatuses);
+  const [currentView, setCurrentView] = useState<ViewMode>("table");
   const { toast } = useToast();
+
+  // Drag and Drop state - specific to TableView for now
+  const [draggedTaskInfo, setDraggedTaskInfo] = useState<{groupId: string, taskId: string} | null>(null);
 
   const handleUpdateTask = (groupId: string, taskId: string, field: keyof Task | 'timeline', value: any) => {
     setTaskGroups(prevGroups =>
@@ -62,7 +32,7 @@ export function TaskBoardClient() {
               tasks: group.tasks.map(task => {
                 if (task.id === taskId) {
                   if (field === 'timeline') {
-                    const range = value as DateRange | undefined;
+                    const range = value as import('react-day-picker').DateRange | undefined;
                     return {
                       ...task,
                       startDate: range?.from ? range.from.toISOString().split('T')[0] : task.startDate,
@@ -83,7 +53,7 @@ export function TaskBoardClient() {
     const newTask: Task = {
       id: `task-${Date.now()}`,
       name: 'New Task',
-      assignee: assignees[0],
+      assignee: initialAssignees[0],
       status: availableStatuses[0] || 'To Do',
       startDate: new Date().toISOString().split('T')[0],
       progress: 0,
@@ -122,34 +92,54 @@ export function TaskBoardClient() {
     }
   };
 
-  const handleDragStart = (groupId: string, taskId: string) => {
-    setDraggedTaskInfo({ groupId, taskId });
+  const handleAddGroup = () => {
+    const newGroup: TaskGroup = {
+       id: `group-${Date.now()}`,
+       name: 'New Group',
+       tasks: [],
+     };
+     setTaskGroups(prev => [...prev, newGroup]);
   };
 
-  const handleDrop = (targetGroupId: string, targetTaskId: string) => {
-    if (!draggedTaskInfo) return;
+  // Drag handlers for TableView
+  const handleDragStart = (groupId: string, taskId: string) => {
+    if (currentView === 'table') {
+      setDraggedTaskInfo({ groupId, taskId });
+    }
+  };
+
+  const handleDrop = (targetGroupId: string, targetTaskId: string | null) => { // targetTaskId can be null if dropping on group header or empty area
+    if (!draggedTaskInfo || currentView !== 'table') return;
+    
+    // Simplified: only allow reordering within the same group for now via table
     if (draggedTaskInfo.groupId !== targetGroupId) {
-      console.warn("Cross-group drag-and-drop not implemented yet.");
-      setDraggedTaskInfo(null); 
+      console.warn("Cross-group drag-and-drop not implemented yet for table view.");
+      setDraggedTaskInfo(null);
       return;
     }
-    if (draggedTaskInfo.taskId === targetTaskId) {
-      setDraggedTaskInfo(null); 
+    if (targetTaskId && draggedTaskInfo.taskId === targetTaskId) {
+      setDraggedTaskInfo(null);
       return;
     }
 
-    setTaskGroups(prevGroups => 
+    setTaskGroups(prevGroups =>
       prevGroups.map(group => {
         if (group.id === targetGroupId) {
           const tasks = [...group.tasks];
           const draggedItemIndex = tasks.findIndex(t => t.id === draggedTaskInfo.taskId);
-          if (draggedItemIndex === -1) return group;
+          if (draggedItemIndex === -1) return group; // Should not happen
+          
           const [draggedItem] = tasks.splice(draggedItemIndex, 1);
-          const targetItemIndex = tasks.findIndex(t => t.id === targetTaskId);
-          if (targetItemIndex === -1) { 
-            tasks.push(draggedItem);
+          
+          if (targetTaskId) {
+            const targetItemIndex = tasks.findIndex(t => t.id === targetTaskId);
+            if (targetItemIndex === -1) { // Dropped on a non-task area, or target task not found
+                tasks.push(draggedItem); // Add to end or handle as needed
+            } else {
+                tasks.splice(targetItemIndex, 0, draggedItem);
+            }
           } else {
-            tasks.splice(targetItemIndex, 0, draggedItem);
+             tasks.push(draggedItem); // If dropped on group without specific task target, add to end
           }
           return { ...group, tasks };
         }
@@ -160,184 +150,74 @@ export function TaskBoardClient() {
   };
 
   const handleDragEnd = () => {
-    setDraggedTaskInfo(null);
+    if (currentView === 'table') {
+      setDraggedTaskInfo(null);
+    }
   };
+
 
   return (
     <div className="space-y-6">
-      {taskGroups.map((group) => (
-        <Card key={group.id} className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xl font-semibold font-headline">{group.name}</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => handleAddTask(group.id)}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Task
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow><TableHead className="w-12"></TableHead><TableHead className="min-w-[250px]">Task Name</TableHead><TableHead>Assignee</TableHead><TableHead>Status</TableHead><TableHead>Priority</TableHead><TableHead>Timeline</TableHead><TableHead className="w-[150px]">Progress</TableHead><TableHead className="w-12 text-right">Actions</TableHead></TableRow>
-              </TableHeader>
-              <TableBody>
-                {group.tasks.map((task) => (
-                  <TableRow 
-                    key={task.id} 
-                    draggable={true}
-                    onDragStart={() => handleDragStart(group.id, task.id)}
-                    onDragOver={(e) => e.preventDefault()} 
-                    onDrop={() => handleDrop(group.id, task.id)}
-                    onDragEnd={handleDragEnd}
-                    className={cn(
-                      "hover:bg-muted/50 transition-colors",
-                      draggedTaskInfo?.taskId === task.id && "opacity-50 bg-slate-200 dark:bg-slate-700"
-                    )}
-                  >
-                    <TableCell className="cursor-grab p-1 text-center">
-                      <GripVertical className="h-5 w-5 text-muted-foreground inline-block" />
-                    </TableCell>
-                    <TableCell>
-                      <Input 
-                        value={task.name} 
-                        onChange={(e) => handleUpdateTask(group.id, task.id, 'name', e.target.value)}
-                        className="border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Select 
-                        value={task.assignee.name}
-                        onValueChange={(value) => {
-                            const selectedAssignee = assignees.find(a => a.name === value);
-                            if(selectedAssignee) handleUpdateTask(group.id, task.id, 'assignee', selectedAssignee);
-                        }}
-                      >
-                        <SelectTrigger className="w-[150px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_svg]:ml-auto">
-                           <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6">
-                                <AvatarImage src={task.assignee.avatarUrl} alt={task.assignee.name} data-ai-hint="person avatar"/>
-                                <AvatarFallback>{task.assignee.fallback}</AvatarFallback>
-                            </Avatar>
-                            <SelectValue placeholder="Assignee" />
-                           </div>
-                        </SelectTrigger>
-                        <SelectContent>
-                            {assignees.map(a => (
-                                <SelectItem key={a.name} value={a.name}>
-                                     <div className="flex items-center gap-2">
-                                        <Avatar className="h-6 w-6">
-                                            <AvatarImage src={a.avatarUrl} alt={a.name} data-ai-hint="person avatar"/>
-                                            <AvatarFallback>{a.fallback}</AvatarFallback>
-                                        </Avatar>
-                                        {a.name}
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="w-auto min-w-[100px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent justify-start hover:bg-transparent">
-                            <Badge variant={getStatusBadgeVariant(task.status)} className="rounded-full px-2 py-0.5 text-xs cursor-pointer">
-                              {task.status === 'Done' && <Check className="mr-1 h-3 w-3" />}
-                              {task.status}
-                            </Badge>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          <DropdownMenuRadioGroup 
-                            value={task.status} 
-                            onValueChange={(value) => handleUpdateTask(group.id, task.id, 'status', value)}
-                          >
-                            {availableStatuses.map(s => (
-                              <DropdownMenuRadioItem key={s} value={s}>
-                                <Badge variant={getStatusBadgeVariant(s)} className="rounded-full px-2 py-0.5 text-xs w-full justify-start">
-                                  {s === 'Done' && <Check className="mr-1 h-3 w-3" />}
-                                  {s}
-                                </Badge>
-                              </DropdownMenuRadioItem>
-                            ))}
-                          </DropdownMenuRadioGroup>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onSelect={handleAddNewStatus}>
-                            <PlusCircle className="mr-2 h-4 w-4" /> Add New Status
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                    <TableCell>
-                        <Select
-                            value={task.priority}
-                            onValueChange={(value: Task['priority']) => handleUpdateTask(group.id, task.id, 'priority', value)}
-                        >
-                            <SelectTrigger className="w-[100px] border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_svg]:ml-auto">
-                                <Badge variant={getPriorityBadgeVariant(task.priority)} className="rounded-full px-2 py-0.5 text-xs">
-                                    <SelectValue placeholder="Priority" />
-                                </Badge>
-                            </SelectTrigger>
-                            <SelectContent>
-                            {priorities.map(p => (
-                                <SelectItem key={p} value={p}>
-                                <Badge variant={getPriorityBadgeVariant(p)} className="rounded-full px-2 py-0.5 text-xs">{p}</Badge>
-                                </SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                    </TableCell>
-                    <TableCell>
-                       <DateRangePicker 
-                          dateRange={{ 
-                            from: task.startDate ? new Date(task.startDate) : undefined, 
-                            to: task.endDate ? new Date(task.endDate) : undefined 
-                          }}
-                          onDateRangeChange={(range) => handleUpdateTask(group.id, task.id, 'timeline', range)}
-                          className="w-full border-none focus:ring-0 focus:border-0 p-0 h-auto bg-transparent [&_button]:p-0 [&_button]:h-auto [&_button]:justify-start [&_button]:font-normal"
-                          popoverAlign="start"
-                        />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Progress value={task.progress} className="w-full h-2" />
-                        <span className="text-xs text-muted-foreground">{task.progress}%</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setEditingTask(task)}>
-                            <Edit2 className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDeleteTask(group.id, task.id)} className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-             {group.tasks.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No tasks in this group yet.</p>
-            )}
-          </CardContent>
-        </Card>
-      ))}
-      <Button variant="outline" className="w-full" onClick={() => {
-         const newGroup: TaskGroup = {
-            id: `group-${Date.now()}`,
-            name: 'New Group',
-            tasks: [],
-          };
-          setTaskGroups(prev => [...prev, newGroup]);
-      }}>
-        <PlusCircle className="mr-2 h-4 w-4" /> Add Group
-      </Button>
+      <div className="flex justify-between items-center">
+        <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as ViewMode)}>
+          <TabsList>
+            <TabsTrigger value="table" className="gap-1">
+              <ListChecks className="h-4 w-4" /> Table
+            </TabsTrigger>
+            <TabsTrigger value="board" className="gap-1">
+              <KanbanSquare className="h-4 w-4" /> Board
+            </TabsTrigger>
+            <TabsTrigger value="roadmap" className="gap-1">
+              <CalendarRange className="h-4 w-4" /> Roadmap
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+         <Button variant="outline" onClick={handleAddGroup}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Group
+        </Button>
+      </div>
+
+      <TabsContent value="table" className={currentView !== 'table' ? 'hidden' : ''}>
+        {taskGroups.map((group) => (
+          <Card key={group.id} className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01] mb-6">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xl font-semibold font-headline">{group.name}</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => handleAddTask(group.id)}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Add Task
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <TableView
+                taskGroup={group}
+                tasks={group.tasks}
+                availableStatuses={availableStatuses}
+                assignees={initialAssignees}
+                priorities={initialPriorities}
+                onUpdateTask={handleUpdateTask}
+                onDeleteTask={handleDeleteTask}
+                onAddNewStatus={handleAddNewStatus}
+                draggedTaskInfo={draggedTaskInfo}
+                onDragStart={handleDragStart}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+              />
+            </CardContent>
+          </Card>
+        ))}
+      </TabsContent>
+
+      <TabsContent value="board" className={currentView !== 'board' ? 'hidden' : ''}>
+        <KanbanView
+          taskGroups={taskGroups}
+          availableStatuses={availableStatuses}
+          assignees={initialAssignees}
+          priorities={initialPriorities}
+        />
+      </TabsContent>
+
+      <TabsContent value="roadmap" className={currentView !== 'roadmap' ? 'hidden' : ''}>
+        <RoadmapView taskGroups={taskGroups} />
+      </TabsContent>
     </div>
   );
 }
