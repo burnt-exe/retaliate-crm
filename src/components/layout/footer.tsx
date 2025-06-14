@@ -11,7 +11,7 @@ export function Footer() {
             <Logo className="h-7 w-7 text-primary" sizes="28px" />
             <span className="font-semibold text-md font-headline text-primary">Retaliate CRM</span>
           </div>
-          <div className="text-xs text-muted-foreground space-y-1">
+          <div className="text-xs text-muted-foreground space-y-1 text-center">
             <p>Powered by Cyber Retaliator Solutions</p>
             <p>Developed by Skunkworks all rights reserved 2025</p>
           </div>
