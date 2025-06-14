@@ -71,9 +71,9 @@ export function StorageServiceCard({ service }: StorageServiceCardProps) {
         </div>
         <Button 
           variant={isConnected ? "outline" : "default"} 
-          size="sm" 
+          size="default" 
           onClick={handleButtonClick}
-          className="w-full md:w-auto md:min-w-0" // Added md:min-w-0
+          className="w-full md:w-auto md:min-w-0"
         >
           {isConnected ? "Manage" : "Connect"}
         </Button>

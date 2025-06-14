@@ -18,8 +18,8 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
   const { toast } = useToast();
 
   const handleToggleConnection = () => {
-    const newConnectedState = !isConnected;
-    setIsConnected(newConnectedState);
+    // const newConnectedState = !isConnected; // State is toggled by button now
+    // setIsConnected(newConnectedState); // State is toggled by button now
     // Toast logic moved to handleButtonClick
   };
 
@@ -58,7 +58,12 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
           <Switch
             id={`connect-${integration.id}`}
             checked={isConnected}
-            onCheckedChange={handleToggleConnection}
+            onCheckedChange={() => {
+              // Clicking switch directly also triggers the button's logic for consistency
+              // Or, if you want switch to only toggle visual state without toast, handle separately
+              setIsConnected(!isConnected); 
+              // Optionally add a simpler toast here or none if button is primary action
+            }}
             aria-label={`Connect ${integration.name}`}
           />
           <label htmlFor={`connect-${integration.id}`} className={cn("text-sm font-medium", isConnected ? "text-primary" : "text-muted-foreground")}>
@@ -67,9 +72,9 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
         </div>
         <Button
           variant={isConnected ? "outline" : "default"}
-          size="sm"
+          size="default"
           onClick={handleButtonClick}
-          className="w-full md:w-auto md:min-w-0" // Added md:min-w-0
+          className="w-full md:w-auto md:min-w-0"
         >
           {isConnected ? "Manage" : "Connect"}
         </Button>
