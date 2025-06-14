@@ -20,17 +20,12 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
   const handleToggleConnection = () => {
     const newConnectedState = !isConnected;
     setIsConnected(newConnectedState);
-    // Here you would typically call an API to update the connection status
-
-    // Toast logic moved to handleButtonClick as per previous request
+    // Toast logic moved to handleButtonClick
   };
 
   const handleButtonClick = () => {
-    // If not connected, clicking the button should initiate connection
-    // If already connected, clicking "Manage" could open a settings dialog (mocked for now)
     if (!isConnected) {
-      // Simulate initiating connection
-      setIsConnected(true); // Optimistically set connected state
+      setIsConnected(true); 
       toast({
         title: `Connecting to ${integration.name}`,
         description: `Attempting to link ${integration.name}. In a real app, this would involve authentication and data sync setup. This is a mock action.`,
@@ -58,12 +53,12 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
       <CardContent className="flex-grow">
         <CardDescription>{integration.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 md:flex-row md:justify-between md:gap-2">
+      <CardFooter className="flex flex-col items-center gap-4 border-t pt-4 md:flex-row md:items-center md:justify-between md:gap-2">
         <div className="flex items-center space-x-2">
           <Switch
             id={`connect-${integration.id}`}
             checked={isConnected}
-            onCheckedChange={handleToggleConnection} // Switch only toggles state, button handles toast
+            onCheckedChange={handleToggleConnection}
             aria-label={`Connect ${integration.name}`}
           />
           <label htmlFor={`connect-${integration.id}`} className={cn("text-sm font-medium", isConnected ? "text-primary" : "text-muted-foreground")}>
@@ -74,7 +69,7 @@ export function IntegrationCard({ integration }: IntegrationCardProps) {
           variant={isConnected ? "outline" : "default"}
           size="sm"
           onClick={handleButtonClick}
-          className="w-full md:w-auto"
+          className="w-full md:w-auto md:min-w-0" // Added md:min-w-0
         >
           {isConnected ? "Manage" : "Connect"}
         </Button>
