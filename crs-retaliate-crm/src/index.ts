@@ -1,19 +1,21 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { initializeApp } from "firebase/app";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+const firebaseConfig = {
+  apiKey: "AIzaSyAJGpXbEXhVqmlic3yl_xWxURqTH4waCsE",
+  authDomain: "retaliate-crm.firebaseapp.com",
+  databaseURL: "https://retaliate-crm-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "retaliate-crm",
+  storageBucket: "retaliate-crm.firebasestorage.app",
+  messagingSenderId: "463943028770",
+  appId: "1:463943028770:web:4886048de689f9f0ef7a7b",
+  measurementId: "G-HDDX6MD2HB"
+};
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+const app = initializeApp(firebaseConfig);
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// 👇 Use your reCAPTCHA site key here
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6LfZRGErAAAAALXVT8tTr9IG-7U7yryf7OT6vZaB'),
+  isTokenAutoRefreshEnabled: true
+});
