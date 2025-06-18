@@ -36,6 +36,7 @@ build: npm run build
 
 # The command to start your Next.js application in production.
 # This should correspond to a script in your package.json (e.g., "start": "next start").
+# Ensure this script uses process.env.PORT (e.g., "next start -p ${PORT:-3000}").
 entryPoint: npm run start
 
 # Environment variables for your application.
