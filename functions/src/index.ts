@@ -81,4 +81,26 @@ export const setUserRole = onCall<SetUserRoleData, Promise<SetUserRoleResult>>(a
 
 // If you have other functions in this file, ensure they also follow the correct
 // Firebase Functions v1 or v2 syntax as appropriate.
+<<<<<<< HEAD
 >>>>>>> 5d0978c (fix this raydo@cloudshell:~/retaliate-crm (retaliate-crm-23sxo)$ cd func)
+=======
+// For example, if you had a 'checkAdmin' function:
+/*
+interface CheckAdminData {
+  // Define any input data if needed
+}
+
+interface CheckAdminResult {
+  isAdmin: boolean;
+  email?: string;
+}
+
+export const checkAdmin = onCall<CheckAdminData, Promise<CheckAdminResult>>(async (request: CallableRequest<CheckAdminData>): Promise<CheckAdminResult> => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'The function must be called while authenticated.');
+  }
+  const isAdmin = request.auth.token.admin === true;
+  return { isAdmin, email: request.auth.token.email };
+});
+*/
+>>>>>>> b6b4203 (raydo@cloudshell:~/retaliate-crm (retaliate-crm-23sxo)$ cd functions)
