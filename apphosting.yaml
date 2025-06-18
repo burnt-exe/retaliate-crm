@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Settings for Backend (on Cloud Run).
 # See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
@@ -23,6 +24,9 @@ runConfig:
   # - variable: MY_SECRET
   #   secret: mySecretRef
 =======
+=======
+
+>>>>>>> f9e33ec (Deploy and punlish)
 # Settings to manage and configure a Firebase App Hosting backend.
 # For more details, see: https://firebase.google.com/docs/app-hosting/configure
 
@@ -42,22 +46,27 @@ entryPoint: npm run start
 # Environment variables for your application.
 # For sensitive data, prefer using Firebase's secret management:
 # https://firebase.google.com/docs/app-hosting/configure-backend#manage-secrets
-# IMPORTANT: Ensure you have set the following in your Firebase App Hosting backend's environment variables:
-#   - NEXT_PUBLIC_FIREBASE_API_KEY: For Firebase client-side SDK.
-#   - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: For Firebase client-side SDK.
-#   - NEXT_PUBLIC_FIREBASE_PROJECT_ID: For Firebase client-side SDK.
-#   - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: For Firebase client-side SDK.
-#   - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: For Firebase client-side SDK.
-#   - NEXT_PUBLIC_FIREBASE_APP_ID: For Firebase client-side SDK.
-#   - GOOGLE_API_KEY: For Genkit AI (Google AI plugin) if not using other auth methods.
-#   - FIREBASE_SERVICE_ACCOUNT_JSON or GOOGLE_APPLICATION_CREDENTIALS: If using Firebase Admin SDK with service account keys.
-#     (e.g., for src/lib/firebase-admin.ts to function correctly on the server)
+# IMPORTANT: Ensure you have set the following in your Firebase App Hosting backend's environment variables
+# in the Firebase Console for your server-side code to function correctly:
+#   - FIREBASE_SERVICE_ACCOUNT_JSON: The JSON content of your service account key for Firebase Admin SDK.
+#   - GOOGLE_API_KEY: For Genkit AI (Google AI plugin) if not using other auth methods for Genkit.
+# The following NEXT_PUBLIC_ variables are for client-side Firebase SDK. They should also be set in
+# App Hosting environment variables to be available during build time and potentially at runtime if needed by server components.
+#   - NEXT_PUBLIC_FIREBASE_API_KEY
+#   - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+#   - NEXT_PUBLIC_FIREBASE_PROJECT_ID
+#   - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+#   - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+#   - NEXT_PUBLIC_FIREBASE_APP_ID
+#   - NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID (optional)
 env:
   - variable: NODE_ENV
     value: production
-  # Example: If your app needs a specific API key for another service
-  # - variable: OTHER_API_KEY
-  #   value: "your_other_api_key_value" # Better to set this as a secret in Firebase Console
+  - variable: EXAMPLE_RUNTIME_VAR # Example of a non-sensitive runtime variable
+    value: "hello_from_apphosting_yaml"
+  # Firebase App Hosting automatically injects FIREBASE_CONFIG and FIREBASE_WEBAPP_CONFIG
+  # environment variables during the build process based on your Firebase project.
+  # You generally do not need to set these manually in apphosting.yaml unless for specific overrides.
 
 # Run configuration settings for your backend instances.
 runConfig:

@@ -1,13 +1,9 @@
+
 import type {NextConfig} from 'next';
+import path from 'path'; // Added for Webpack alias
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // typescript: {
-  //   ignoreBuildErrors: true, // Removed for production readiness
-  // },
-  // eslint: {
-  //   ignoreDuringBuilds: true, // Removed for production readiness
-  // },
   images: {
     remotePatterns: [
       {
@@ -23,6 +19,14 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
+  },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Add path alias for @/* to resolve to src/*
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+    };
+    return config;
   },
 };
 
