@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "main": "lib/index.js",
   "scripts": {
     "genkit:start": "genkit start -- tsx --watch src/genkit-sample.ts",
@@ -7,10 +8,19 @@
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
+=======
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+>>>>>>> e443c00 (Build is failing - can you install firebase-functions/v2/https)
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
+<<<<<<< HEAD
   "name": "functions",
   "engines": {
     "node": "22"
@@ -21,6 +31,15 @@
     "firebase-functions": "^6.0.1",
     "genkit": "^1.12.0",
     "genkit-cli": "^1.12.0"
+=======
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.3.0",
+    "firebase-functions": "^5.0.1"
+>>>>>>> e443c00 (Build is failing - can you install firebase-functions/v2/https)
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
@@ -28,9 +47,16 @@
     "eslint": "^8.9.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.4",
+<<<<<<< HEAD
     "firebase-functions-test": "^3.1.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "private": true
 }
+=======
+    "typescript": "^5.3.3"
+  },
+  "private": true
+}
+>>>>>>> e443c00 (Build is failing - can you install firebase-functions/v2/https)
