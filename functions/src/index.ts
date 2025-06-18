@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * Import function triggers from their respective submodules:
  *
@@ -19,6 +20,9 @@ import * as logger from "firebase-functions/logger";
 //   response.send("Hello from Firebase!");
 // });
 =======
+=======
+
+>>>>>>> 3a06a45 (raydo@cloudshell:~/retaliate-crm (retaliate-crm-23sxo)$ cd functions)
 // Firebase Functions v2
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 // Import types for request and auth context
