@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns'; // format removed as it's handled by ClientFormattedDate
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { mockTenders, Tender, TenderStatus, tenderStatuses as allStatuses } from
 import { TenderFormDialog } from "./tender-form-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { TenderDetailsDialog } from "./tender-details-dialog";
+import { ClientFormattedDate } from "@/components/ui/client-formatted-date"; // Import the new component
 
 export function TenderListClient() {
   const [tenders, setTenders] = useState<Tender[]>(mockTenders);
@@ -59,8 +60,8 @@ export function TenderListClient() {
     switch (status) {
       case "New Alert": return "default";
       case "Processing": return "secondary";
-      case "Response Submitted": return "outline"; // Consider a specific color like blue if theme supports
-      case "Awarded": return "default"; // Consider a specific color like green
+      case "Response Submitted": return "outline"; 
+      case "Awarded": return "default"; 
       case "Lost": return "destructive";
       case "Archived": return "outline";
       default: return "default";
@@ -125,9 +126,13 @@ export function TenderListClient() {
               <TableRow key={tender.id}>
                 <TableCell className="font-medium">{tender.title}</TableCell>
                 <TableCell>{tender.issuer}</TableCell>
-                <TableCell className="hidden md:table-cell">{format(parseISO(tender.deadline), 'PPP')}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                  <ClientFormattedDate isoDateString={tender.deadline} formatString="PPP" />
+                </TableCell>
                 <TableCell><Badge variant={getStatusBadgeVariant(tender.status)}>{tender.status}</Badge></TableCell>
-                <TableCell className="hidden lg:table-cell">{format(parseISO(tender.lastUpdated), 'Pp')}</TableCell>
+                <TableCell className="hidden lg:table-cell">
+                  <ClientFormattedDate isoDateString={tender.lastUpdated} formatString="Pp" />
+                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
