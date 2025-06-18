@@ -1,6 +1,5 @@
 
 import type {NextConfig} from 'next';
-import path from 'path'; // Added for Webpack alias
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -20,14 +19,8 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Add path alias for @/* to resolve to src/*
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, 'src'),
-    };
-    return config;
-  },
+  // Webpack alias configuration removed to rely on tsconfig.json
+  // for both Turbopack (dev) and Webpack (build)
 };
 
 export default nextConfig;
