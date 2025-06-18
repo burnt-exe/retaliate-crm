@@ -130,7 +130,6 @@ export const mockStorageServices: StorageService[] = [
   { id: 'storage-ftp', name: 'FTP Server', description: 'Connect to an FTP server for file transfers.', icon: Server, category: 'Network & Local', connected: false },
 ];
 
-
 export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done'];
 export const priorities: Priority[] = ['Low', 'Medium', 'High'];
 
@@ -155,3 +154,73 @@ export const getAllUniqueCustomerTags = (customers: Customer[]): string[] => {
   return Array.from(allTags);
 };
 
+// --- Tenders & RFQs ---
+export type TenderStatus = "New Alert" | "Processing" | "Response Submitted" | "Awarded" | "Lost" | "Archived";
+
+export interface Tender {
+  id: string;
+  title: string;
+  issuer: string;
+  reference?: string;
+  deadline: string; // ISO date string
+  status: TenderStatus;
+  description: string;
+  value?: number;
+  currency?: string;
+  assignedTo?: string; // User ID or name
+  submissionDate?: string; // ISO date string
+  lastUpdated: string; // ISO date string
+}
+
+export const mockTenders: Tender[] = [
+  {
+    id: "tender-001",
+    title: "Supply of IT Equipment for Gov Department X",
+    issuer: "Government Department X",
+    reference: "GDX/IT/2024/001",
+    deadline: "2024-08-15",
+    status: "Processing",
+    description: "Request for quotation for the supply and delivery of 50 laptops, 20 printers, and related accessories. Detailed specifications available on the portal.",
+    value: 75000,
+    currency: "USD",
+    assignedTo: "Alice Wonderland",
+    lastUpdated: "2024-07-20T10:00:00Z",
+  },
+  {
+    id: "tender-002",
+    title: "Consultancy Services for Digital Transformation Strategy",
+    issuer: "MegaCorp Inc.",
+    reference: "MGC/CONS/DT/2024/S2",
+    deadline: "2024-07-30",
+    status: "New Alert",
+    description: "MegaCorp Inc. seeks proposals from qualified consultancy firms to develop a comprehensive digital transformation strategy. Focus areas include AI integration, cloud migration, and data analytics.",
+    assignedTo: "Bob The Builder",
+    lastUpdated: "2024-07-22T14:30:00Z",
+  },
+  {
+    id: "tender-003",
+    title: "Office Cleaning Services - 3 Year Contract",
+    issuer: "City Council of Anytown",
+    reference: "CCA/CS/2024/78B",
+    deadline: "2024-07-25",
+    status: "Response Submitted",
+    description: "Provision of daily office cleaning services for 5 municipal buildings. Site visit mandatory. Submission via e-portal.",
+    value: 120000,
+    currency: "USD",
+    assignedTo: "Carol Danvers",
+    submissionDate: "2024-07-20",
+    lastUpdated: "2024-07-21T09:15:00Z",
+  },
+  {
+    id: "tender-004",
+    title: "Development of Mobile Application for Tourism",
+    issuer: "Regional Tourism Board",
+    reference: "RTB/APP/2024/01",
+    deadline: "2024-09-01",
+    status: "New Alert",
+    description: "Design, development, and deployment of a cross-platform mobile application to promote regional tourism. Features to include maps, event listings, and booking integrations.",
+    lastUpdated: "2024-07-23T11:00:00Z",
+  },
+];
+
+export const tenderStatuses: TenderStatus[] = ["New Alert", "Processing", "Response Submitted", "Awarded", "Lost", "Archived"];
