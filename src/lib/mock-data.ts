@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon, Files, Cloud, Package, Archive, Github, FolderKanban, Server } from 'lucide-react';
+import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon, Files, Cloud, Package, Archive, Github, FolderKanban, Server, DollarSign } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
 export type Priority = 'Low' | 'Medium' | 'High';
@@ -133,17 +133,20 @@ export const mockStorageServices: StorageService[] = [
 export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done'];
 export const priorities: Priority[] = ['Low', 'Medium', 'High'];
 
-export interface Assignee {
-  name:string,
-  avatarUrl: string,
-  fallback: string
+export interface Assignee { // This can also serve as SalesPerson
+  id: string;
+  name:string;
+  avatarUrl: string;
+  fallback: string;
+  team?: string; // Optional: for sales team context
+  commissionRate?: number; // Base commission rate
 }
-export const assignees = [
-  { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' },
-  { name: 'Bob The Builder', avatarUrl: 'https://placehold.co/40x40.png?text=BB', fallback: 'BB' },
-  { name: 'Carol Danvers', avatarUrl: 'https://placehold.co/40x40.png?text=CD', fallback: 'CD' },
-  { name: 'David Copperfield', avatarUrl: 'https://placehold.co/40x40.png?text=DC', fallback: 'DC' },
-  { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' },
+export const assignees: Assignee[] = [
+  { id: 'assignee-1', name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW', team: "Alpha Team", commissionRate: 0.10 },
+  { id: 'assignee-2', name: 'Bob The Builder', avatarUrl: 'https://placehold.co/40x40.png?text=BB', fallback: 'BB', team: "Bravo Team", commissionRate: 0.12 },
+  { id: 'assignee-3', name: 'Carol Danvers', avatarUrl: 'https://placehold.co/40x40.png?text=CD', fallback: 'CD', team: "Alpha Team", commissionRate: 0.10 },
+  { id: 'assignee-4', name: 'David Copperfield', avatarUrl: 'https://placehold.co/40x40.png?text=DC', fallback: 'DC', team: "Charlie Team", commissionRate: 0.15 },
+  { id: 'assignee-5', name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH', team: "Bravo Team", commissionRate: 0.12 },
 ];
 
 export const getAllUniqueCustomerTags = (customers: Customer[]): string[] => {
@@ -224,3 +227,90 @@ export const mockTenders: Tender[] = [
 ];
 
 export const tenderStatuses: TenderStatus[] = ["New Alert", "Processing", "Response Submitted", "Awarded", "Lost", "Archived"];
+
+// --- Commissions Data ---
+export type CommissionStatus = "Pending" | "Approved" | "Paid" | "Cancelled";
+
+export interface Sale {
+  id: string;
+  customerId: string; // Link to Customer
+  product: string;
+  saleAmount: number;
+  saleDate: string; // ISO Date string
+  currency: string;
+}
+
+export interface CommissionEntry {
+  id: string;
+  saleId: string; // Link to Sale
+  salesPersonId: string; // Link to Assignee/SalesPerson
+  commissionRate: number; // e.g., 0.10 for 10%
+  commissionAmount: number;
+  status: CommissionStatus;
+  paymentDate?: string; // ISO Date string
+  notes?: string;
+}
+
+export const mockSalesPersons: Assignee[] = assignees.filter(a => a.commissionRate !== undefined); // Use existing assignees with commission rates
+
+export const mockSales: Sale[] = [
+  { id: "sale-001", customerId: "cust-1", product: "AI Analytics Suite - Enterprise License", saleAmount: 50000, saleDate: "2024-07-01", currency: "USD" },
+  { id: "sale-002", customerId: "cust-2", product: "CRM Pro Annual Subscription", saleAmount: 1200, saleDate: "2024-07-05", currency: "USD" },
+  { id: "sale-003", customerId: "cust-4", product: "Consulting Package - 100 hours", saleAmount: 15000, saleDate: "2024-07-10", currency: "USD" },
+  { id: "sale-004", customerId: "cust-1", product: "Premium Support Add-on", saleAmount: 5000, saleDate: "2024-07-15", currency: "USD" },
+  { id: "sale-005", customerId: "cust-3", product: "Startup QuickStart Package", saleAmount: 800, saleDate: "2024-07-20", currency: "USD" },
+];
+
+export const mockCommissions: CommissionEntry[] = [
+  {
+    id: "comm-001",
+    saleId: "sale-001",
+    salesPersonId: "assignee-1", // Alice Wonderland
+    commissionRate: mockSalesPersons.find(p => p.id === "assignee-1")!.commissionRate!,
+    commissionAmount: 50000 * mockSalesPersons.find(p => p.id === "assignee-1")!.commissionRate!,
+    status: "Paid",
+    saleDate: "2024-07-01",
+    paymentDate: "2024-07-15",
+    notes: "Paid via July payroll."
+  },
+  {
+    id: "comm-002",
+    saleId: "sale-002",
+    salesPersonId: "assignee-2", // Bob The Builder
+    commissionRate: mockSalesPersons.find(p => p.id === "assignee-2")!.commissionRate!,
+    commissionAmount: 1200 * mockSalesPersons.find(p => p.id === "assignee-2")!.commissionRate!,
+    status: "Approved",
+    saleDate: "2024-07-05",
+    notes: "Awaiting payment processing."
+  },
+  {
+    id: "comm-003",
+    saleId: "sale-003",
+    salesPersonId: "assignee-4", // David Copperfield
+    commissionRate: mockSalesPersons.find(p => p.id === "assignee-4")!.commissionRate!,
+    commissionAmount: 15000 * mockSalesPersons.find(p => p.id === "assignee-4")!.commissionRate!,
+    status: "Pending",
+    saleDate: "2024-07-10",
+  },
+  {
+    id: "comm-004",
+    saleId: "sale-004",
+    salesPersonId: "assignee-1", // Alice Wonderland
+    commissionRate: mockSalesPersons.find(p => p.id === "assignee-1")!.commissionRate!,
+    commissionAmount: 5000 * mockSalesPersons.find(p => p.id === "assignee-1")!.commissionRate!,
+    status: "Pending",
+    saleDate: "2024-07-15",
+  },
+  {
+    id: "comm-005",
+    saleId: "sale-005",
+    salesPersonId: "assignee-3", // Carol Danvers (assuming she gets commission)
+    commissionRate: mockSalesPersons.find(p => p.id === "assignee-3")!.commissionRate! || 0.08, // Default if not set
+    commissionAmount: 800 * (mockSalesPersons.find(p => p.id === "assignee-3")!.commissionRate! || 0.08),
+    status: "Paid",
+    saleDate: "2024-07-20",
+    paymentDate: "2024-07-28",
+  },
+];
+
+export const commissionStatuses: CommissionStatus[] = ["Pending", "Approved", "Paid", "Cancelled"];
