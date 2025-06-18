@@ -4,40 +4,49 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { MessageSquare, Settings, CheckCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Logo } from "@/components/icons"; // Assuming /crs-logo.png is the Retaliate CRM logo
+import { Logo, MicrosoftIcon } from "@/components/icons";
 
 export default function TeamsPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleToggleConnection = () => {
     if (isConnected) {
       // Simulate disconnection
       setIsConnected(false);
+      setIsConnecting(false); // Reset connecting state
       toast({
         title: "Microsoft Teams Disconnected",
         description: "Your Microsoft Teams integration has been disconnected.",
       });
     } else {
-      setIsConnecting(true);
-      toast({
-        title: "Connecting to Microsoft Teams...",
-        description: "You would typically be redirected to Microsoft to sign in. This is a mock flow.",
-      });
-      // Simulate authentication delay
-      setTimeout(() => {
-        setIsConnected(true);
-        setIsConnecting(false);
-        toast({
-          title: "Microsoft Teams Connected!",
-          description: "You can now leverage Teams features within the CRM.",
-          variant: "default",
-        });
-      }, 2500);
+      // Open the authentication dialog
+      setIsAuthDialogOpen(true);
     }
+  };
+
+  const handleMockSignIn = () => {
+    setIsAuthDialogOpen(false); // Close the dialog
+    setIsConnecting(true);
+    toast({
+      title: "Authenticating with Microsoft...",
+      description: "Simulating Microsoft sign-in. Please wait. You would typically be redirected to Microsoft.",
+    });
+    // Simulate authentication delay
+    setTimeout(() => {
+      setIsConnected(true);
+      setIsConnecting(false);
+      toast({
+        title: "Microsoft Teams Connected!",
+        description: "You can now leverage Teams features within the CRM.",
+        variant: "default",
+      });
+    }, 2500);
   };
 
   return (
@@ -92,7 +101,7 @@ export default function TeamsPage() {
                 </ul>
               </div>
               <div className="text-center">
-                <svg
+                 <svg
                   width="800"
                   height="400"
                   viewBox="0 0 800 400"
@@ -106,31 +115,16 @@ export default function TeamsPage() {
                   <title id="teamsIntegrationTitle">Retaliate CRM and Microsoft Teams Integration Visual</title>
                   <desc>A visual representation showing Retaliate CRM logo and Microsoft Teams logo connected, symbolizing integration.</desc>
                   <rect width="100%" height="100%" fill="hsl(var(--card))" rx="8"/>
-                  
-                  {/* Retaliate CRM Logo (ensure /crs-logo.png exists in public folder) */}
-                  {/* Using a placeholder as Logo component is not directly usable in SVG. You might need to inline SVG for your logo or use an actual image path */}
                   <image xlinkHref="/crs-logo.png" x="50" y="125" height="150" width="150" data-ai-hint="company logo" />
-
-
-                  {/* Connecting Plus Sign */}
                   <path d="M395 150 v100 M345 200 h100" stroke="hsl(var(--primary))" strokeWidth="12" strokeLinecap="round" />
-
-                  {/* Simplified Teams Logo */}
                   <g transform="translate(520 120)">
-                    {/* Darker purple background elements for depth (shadows) */}
                     <rect x="5" y="5" width="120" height="120" rx="20" fill="#3A367E" />
                     <rect x="130" y="65" width="40" height="70" rx="10" fill="#5A54A3" transform="translate(5 5)" />
                     <circle cx="195" cy="55" r="18" fill="#5A54A3" transform="translate(5 5)" />
-
-                    {/* Main Teams Icon Elements */}
                     <rect x="0" y="0" width="120" height="120" rx="20" fill="#4F52B5" />
                     <text x="60" y="85" fontFamily="Inter, Arial, sans-serif" fontSize="70" fontWeight="bold" fill="white" textAnchor="middle">T</text>
-
-                    {/* Person 1 */}
                     <rect x="130" y="65" width="40" height="70" rx="10" fill="#7879F1" />
                     <circle cx="150" cy="45" r="20" fill="#7879F1" />
-
-                    {/* Person 2 (slightly smaller, lighter, and offset) */}
                     <rect x="175" y="75" width="36" height="60" rx="9" fill="#A09DEF" />
                     <circle cx="193" cy="55" r="18" fill="#A09DEF" />
                   </g>
@@ -158,6 +152,32 @@ export default function TeamsPage() {
           </Button>
         </CardFooter>
       </Card>
+
+      <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <MicrosoftIcon className="mr-2 h-6 w-6 text-[#0078D4]" /> Connect to Microsoft Teams
+            </DialogTitle>
+            <DialogDescription>
+              To integrate Retaliate CRM with Microsoft Teams, please sign in with your Microsoft 365 work account.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 text-center space-y-4">
+            <p className="text-sm text-muted-foreground">
+              You will be redirected to Microsoft to securely sign in. Retaliate CRM will request permission to access your Teams information.
+            </p>
+            <Button onClick={handleMockSignIn} className="w-full bg-[#0078D4] hover:bg-[#005A9E] text-white">
+              <MicrosoftIcon className="mr-2 h-5 w-5" />
+              Sign in with Microsoft
+            </Button>
+          </div>
+          <DialogFooter className="justify-center">
+            <Button variant="ghost" onClick={() => setIsAuthDialogOpen(false)}>Cancel</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
