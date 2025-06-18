@@ -10,8 +10,11 @@ import { useToast } from "@/hooks/use-toast";
 import { MicrosoftIcon } from "@/components/icons";
 
 import { MsalProvider, useMsal, useIsAuthenticated, AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
-import { PublicClientApplication, InteractionStatus, type AccountInfo, PopupRequest } from "@azure/msal-browser";
-import { msalInstance as msalInstanceConfig, loginRequest } from "@/lib/msal-config";
+import { type AccountInfo, PopupRequest, InteractionStatus } from "@azure/msal-browser";
+// Correctly import msalInstance (no need to create a new one in this component)
+// and also import msalConfig if you needed to create a new instance for some reason,
+// but here we just need the pre-configured instance.
+import { msalInstance, loginRequest } from "@/lib/msal-config";
 
 
 function TeamsPageContent() {
@@ -90,7 +93,7 @@ function TeamsPageContent() {
     } catch (error) {
       console.error("Token Acquisition Error:", error);
       // Fallback to interactive method if silent fails
-      if (error instanceof Error && (error.name === "InteractionRequiredAuthError" || error.name === "BrowserAuthError")) {
+      if (error instanceof Error && (error.name === "InteractionRequiredAuthError" || error.name === "BrowserAuthError" || error.name === "ClientAuthError")) { // Added ClientAuthError as it can also indicate interaction needed
         try {
           const response = await instance.acquireTokenPopup(request);
           // const accessToken = response.accessToken;
@@ -235,7 +238,7 @@ function TeamsPageContent() {
 
 // Wrap the page content with MsalProvider
 export default function TeamsPage() {
-  const msalInstance = new PublicClientApplication(msalInstanceConfig.auth); // Create new instance or use one from config
+  // Use the msalInstance imported from msal-config.ts directly
   return (
     <MsalProvider instance={msalInstance}>
       <TeamsPageContent />
