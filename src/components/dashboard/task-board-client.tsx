@@ -159,65 +159,68 @@ export function TaskBoardClient() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as ViewMode)}>
-          <TabsList>
-            <TabsTrigger value="table" className="gap-1">
-              <ListChecks className="h-4 w-4" /> Table
-            </TabsTrigger>
-            <TabsTrigger value="board" className="gap-1">
-              <KanbanSquare className="h-4 w-4" /> Board
-            </TabsTrigger>
-            <TabsTrigger value="roadmap" className="gap-1">
-              <CalendarRange className="h-4 w-4" /> Roadmap
-            </TabsTrigger>
-          </TabsList>
+        <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as ViewMode)} className="w-full">
+          <div className="flex justify-between items-center mb-4">
+            <TabsList>
+              <TabsTrigger value="table" className="gap-1">
+                <ListChecks className="h-4 w-4" /> Table
+              </TabsTrigger>
+              <TabsTrigger value="board" className="gap-1">
+                <KanbanSquare className="h-4 w-4" /> Board
+              </TabsTrigger>
+              <TabsTrigger value="roadmap" className="gap-1">
+                <CalendarRange className="h-4 w-4" /> Roadmap
+              </TabsTrigger>
+            </TabsList>
+            <Button variant="outline" onClick={handleAddGroup}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Add Group
+            </Button>
+          </div>
+
+          <TabsContent value="table">
+            {taskGroups.map((group) => (
+              <Card key={group.id} className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01] mb-6">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xl font-semibold font-headline">{group.name}</CardTitle>
+                  <Button variant="ghost" size="sm" onClick={() => handleAddTask(group.id)}>
+                    <PlusCircle className="mr-2 h-4 w-4" /> Add Task
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <TableView
+                    taskGroup={group}
+                    tasks={group.tasks}
+                    availableStatuses={availableStatuses}
+                    assignees={initialAssignees}
+                    priorities={initialPriorities}
+                    onUpdateTask={handleUpdateTask}
+                    onDeleteTask={handleDeleteTask}
+                    onAddNewStatus={handleAddNewStatus}
+                    draggedTaskInfo={draggedTaskInfo}
+                    onDragStart={handleDragStart}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                  />
+                </CardContent>
+              </Card>
+            ))}
+             {taskGroups.length === 0 && <p className="text-center text-muted-foreground py-8">No task groups. Click "Add Group" to start.</p>}
+          </TabsContent>
+
+          <TabsContent value="board">
+            <KanbanView
+              taskGroups={taskGroups}
+              availableStatuses={availableStatuses}
+              assignees={initialAssignees}
+              priorities={initialPriorities}
+            />
+          </TabsContent>
+
+          <TabsContent value="roadmap">
+            <RoadmapView taskGroups={taskGroups} />
+          </TabsContent>
         </Tabs>
-         <Button variant="outline" onClick={handleAddGroup}>
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Group
-        </Button>
       </div>
-
-      <TabsContent value="table" className={currentView !== 'table' ? 'hidden' : ''}>
-        {taskGroups.map((group) => (
-          <Card key={group.id} className="shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01] mb-6">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-semibold font-headline">{group.name}</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => handleAddTask(group.id)}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Task
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <TableView
-                taskGroup={group}
-                tasks={group.tasks}
-                availableStatuses={availableStatuses}
-                assignees={initialAssignees}
-                priorities={initialPriorities}
-                onUpdateTask={handleUpdateTask}
-                onDeleteTask={handleDeleteTask}
-                onAddNewStatus={handleAddNewStatus}
-                draggedTaskInfo={draggedTaskInfo}
-                onDragStart={handleDragStart}
-                onDrop={handleDrop}
-                onDragEnd={handleDragEnd}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </TabsContent>
-
-      <TabsContent value="board" className={currentView !== 'board' ? 'hidden' : ''}>
-        <KanbanView
-          taskGroups={taskGroups}
-          availableStatuses={availableStatuses}
-          assignees={initialAssignees}
-          priorities={initialPriorities}
-        />
-      </TabsContent>
-
-      <TabsContent value="roadmap" className={currentView !== 'roadmap' ? 'hidden' : ''}>
-        <RoadmapView taskGroups={taskGroups} />
-      </TabsContent>
     </div>
   );
 }
