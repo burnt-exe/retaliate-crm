@@ -3,15 +3,17 @@ import type { LucideIcon } from 'lucide-react';
 import { Facebook, Linkedin, Briefcase, MessageSquare, AppWindow, Phone, Mail, Users as UsersIcon, Files, Cloud, Package, Archive, Github, FolderKanban, Server } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
+export type Priority = 'Low' | 'Medium' | 'High';
+
 export interface Task {
   id: string;
   name: string;
   assignee: { name: string; avatarUrl: string; fallback: string };
-  status: string; 
-  startDate: string; 
-  endDate?: string;  
+  status: string;
+  startDate: string;
+  endDate?: string;
   progress: number;
-  priority: 'Low' | 'Medium' | 'High';
+  priority: Priority;
 }
 
 export interface TaskGroup {
@@ -37,7 +39,7 @@ export const mockTaskGroups: TaskGroup[] = [
     tasks: [
       { id: 'task-5', name: 'User story mapping', assignee: { name: 'Eve Harrington', avatarUrl: 'https://placehold.co/40x40.png?text=EH', fallback: 'EH' }, status: 'Done', startDate: '2024-09-20', endDate: '2024-09-30', progress: 100, priority: 'High' },
       { id: 'task-6', name: 'Backend API implementation', assignee: { name: 'Frankenstein Monster', avatarUrl: 'https://placehold.co/40x40.png?text=FM', fallback: 'FM' }, status: 'In Progress', startDate: '2024-11-01', endDate: '2024-11-15', progress: 45, priority: 'High' },
-      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', startDate: '2024-11-16', progress: 0, priority: 'Medium' }, 
+      { id: 'task-7', name: 'Frontend UI development', assignee: { name: 'Grace Hopper', avatarUrl: 'https://placehold.co/40x40.png?text=GH', fallback: 'GH' }, status: 'To Do', startDate: '2024-11-16', progress: 0, priority: 'Medium' },
     ],
   },
 ];
@@ -48,7 +50,7 @@ export interface Customer {
   email: string;
   phone: string;
   company: string;
-  lastContact: string; 
+  lastContact: string;
   tags: string[];
   notes?: string;
 }
@@ -87,7 +89,7 @@ export const mockIntegrations: Integration[] = [
     id: 'integ-gws',
     name: 'Google Workspace',
     description: 'Integrate with Gmail, Calendar, Drive, Docs, Sheets, and Meet for team collaboration.',
-    icon: UsersIcon, // Using UsersIcon as a placeholder for the collaborative suite nature
+    icon: UsersIcon, 
     category: 'Productivity',
     connected: false,
   },
@@ -100,7 +102,7 @@ export const mockIntegrations: Integration[] = [
     connected: false,
   },
   {
-    id: 'integ-bulkmail-m365', // Clarified ID
+    id: 'integ-bulkmail-m365', 
     name: 'Bulk Email (MS Exchange Online)',
     description: 'Send bulk emails using your Microsoft 365 Exchange Online tenant for marketing campaigns.',
     icon: Mail,
@@ -129,8 +131,14 @@ export const mockStorageServices: StorageService[] = [
 ];
 
 
-export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done']; 
-export const priorities: Task['priority'][] = ['Low', 'Medium', 'High'];
+export const statuses: string[] = ['To Do', 'In Progress', 'Review', 'Done'];
+export const priorities: Priority[] = ['Low', 'Medium', 'High'];
+
+export interface Assignee {
+  name:string,
+  avatarUrl: string,
+  fallback: string
+}
 export const assignees = [
   { name: 'Alice Wonderland', avatarUrl: 'https://placehold.co/40x40.png?text=AW', fallback: 'AW' },
   { name: 'Bob The Builder', avatarUrl: 'https://placehold.co/40x40.png?text=BB', fallback: 'BB' },
