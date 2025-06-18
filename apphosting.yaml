@@ -51,12 +51,13 @@ entryPoint: npm run start
 #   - NEXT_PUBLIC_FIREBASE_APP_ID: For Firebase client-side SDK.
 #   - GOOGLE_API_KEY: For Genkit AI (Google AI plugin) if not using other auth methods.
 #   - FIREBASE_SERVICE_ACCOUNT_JSON or GOOGLE_APPLICATION_CREDENTIALS: If using Firebase Admin SDK with service account keys.
+#     (e.g., for src/lib/firebase-admin.ts to function correctly on the server)
 env:
   - variable: NODE_ENV
     value: production
-  # Example of another environment variable:
-  # - variable: API_BASE_URL
-  #   value: https://api.example.com
+  # Example: If your app needs a specific API key for another service
+  # - variable: OTHER_API_KEY
+  #   value: "your_other_api_key_value" # Better to set this as a secret in Firebase Console
 
 # Run configuration settings for your backend instances.
 runConfig:
@@ -70,7 +71,7 @@ runConfig:
   minInstances: 0
   # Maximum number of instances to scale up to in response to traffic.
   # Default is 100 if not specified.
-  maxInstances: 2
+  maxInstances: 2 # Adjust as needed
   # Number of concurrent requests an instance can handle before scaling up.
   # Default is 80.
   concurrency: 80
